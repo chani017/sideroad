@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>p5.js Sketch</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <style>
+        .bg-cover {
+        background-image: url('/Users/dachan/Desktop/designcamp/hand.png');
+        background-size: cover;  
+        background-position: center;  
+        background-repeat: no-repeat;  
+        background-attachment: fixed;
+        min-height: 100vh;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    
+    <script>
+        let fractalBranches = [];
+        let maxBranches = 2000;
+        let branchSpeed = 1.8;
+        let branchAngle = 0.5;
+        let branchLength = 10;
+        let maxGenerations = 10;
+        let growthPoints = []; // Track active growth points
+
+        function setup() {
+            createCanvas(windowWidth, windowHeight);
+            background(255);
+            stroke(0);
+            strokeWeight(0.8);
+            noFill();
+        }
+
+        function draw() {
+            background(255);
+            
+            // Update and draw all fractal branches
+            for (let i = fractalBranches.length - 1; i >= 0; i--) {
+                let branch = fractalBranches[i];
+                branch.update();
+                branch.draw();
+                
+                // Only remove branches that are extremely old or have too many generations
+                if (branch.generation > maxGenerations || branch.life < 0.05) {
+                    fractalBranches.splice(i, 1);
+                }
+            }
+            
+            // Limit total number of branches for performance
+            if (fractalBranches.length > maxBranches) {
+                fractalBranches.splice(0, fractalBranches.length - maxBranches);
+            }
+        }
+
+        function mousePressed() {
+            // Create new fractal growth point only on click
+            createFractalGrowthPoint(mouseX, mouseY);
+        }
+
+        function touchStarted() {
+            // Create new fractal growth point only on touch
+            createFractalGrowthPoint(mouseX, mouseY);
+            return false; // Prevent default touch behavior
+        }
+
+        function createFractalGrowthPoint(x, y) {
+            // Create multiple initial branches from the click point for richer growth
+            let numInitialBranches = 4 + floor(random(4)); // 4-7 initial branches
+            
+            for (let i = 0; i < numInitialBranches; i++) {
+                let angle = (TWO_PI / numInitialBranches) * i + random(-0.3, 0.3);
+                createFractalBranch(x, y, 0, angle);
+            }
+        }
+
+        function createFractalBranch(x, y, generation, angle) {
+            if (generation < maxGenerations && fractalBranches.length < maxBranches) {
+                fractalBranches.push(new FractalBranch(x, y, generation, angle));
+            }
+        }
+
+        class FractalBranch {
+            constructor(x, y, generation, angle) {
+                this.x = x;
+                this.y = y;
+                this.startX = x;
+                this.startY = y;
+                this.angle = angle;
+                this.generation = generation;
+                this.length = branchLength * (0.7 + random(0.6));
+                this.currentLength = 0;
+                this.life = 1.0;
+                this.growthRate = branchSpeed * (0.4 + random(0.8));
+                this.branchesCreated = false;
+                this.branchAngle1 = this.angle + branchAngle * (0.5 + random(1.0));
+                this.branchAngle2 = this.angle - branchAngle * (0.5 + random(1.0));
+                this.endX = this.x;
+                this.endY = this.y;
+                this.creationTime = frameCount;
+                this.branchDelay = random(15, 40); // Delay before creating branches
+                this.branchInterval = random(25, 50); // Interval between branch creations
+                this.lastBranchTime = 0;
+            }
+
+            update() {
+                // Continuous growth - never stops
+                this.currentLength += this.growthRate;
+                
+                // Calculate end position with organic movement
+                this.endX = this.startX + cos(this.angle) * this.currentLength;
+                this.endY = this.startY + sin(this.angle) * this.currentLength;
+                
+                // Add organic, flowing movement
+                let time = frameCount * 0.003;
+                this.endX += sin(time + this.generation * 0.4) * 1.5;
+                this.endY += cos(time + this.generation * 0.6) * 1.5;
+                
+                // Create branches continuously after initial delay
+                if (frameCount - this.creationTime > this.branchDelay && 
+                    this.generation < maxGenerations - 1 && 
+                    fractalBranches.length < maxBranches - 3) {
+                    
+                    // Create branches at intervals for continuous growth
+                    if (frameCount - this.lastBranchTime > this.branchInterval) {
+                        this.createBranches();
+                        this.lastBranchTime = frameCount;
+                    }
+                }
+                
+                // Very slow fade to maintain persistence
+                this.life -= 0.0002;
+            }
+
+            createBranches() {
+                if (fractalBranches.length < maxBranches - 2) {
+                    // Create two main branches
+                    createFractalBranch(this.endX, this.endY, this.generation + 1, this.branchAngle1);
+                    createFractalBranch(this.endX, this.endY, this.generation + 1, this.branchAngle2);
+                    
+                    // Create additional branches for more complexity
+                    if (random() < 0.5) {
+                        let thirdAngle = this.angle + random(-branchAngle * 1.5, branchAngle * 1.5);
+                        createFractalBranch(this.endX, this.endY, this.generation + 1, thirdAngle);
+                    }
+                    
+                    // Occasionally create a fourth branch
+                    if (random() < 0.3) {
+                        let fourthAngle = this.angle + random(-branchAngle * 2, branchAngle * 2);
+                        createFractalBranch(this.endX, this.endY, this.generation + 1, fourthAngle);
+                    }
+                }
+            }
+
+            draw() {
+                if (this.currentLength > 0) {
+                    stroke(0, this.life * 255);
+                    strokeWeight(max(0.4, 1.2 - this.generation * 0.08));
+                    line(this.startX, this.startY, this.endX, this.endY);
+                }
+            }
+        }
+
+        function windowResized() {
+            resizeCanvas(windowWidth, windowHeight);
+        }
+    </script>
+</body>
+</html>
