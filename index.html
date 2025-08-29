@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
     <title>Large Spiral Circles</title>
     <style>
         * {
@@ -21,27 +20,10 @@
         canvas {
             display: block;
             cursor: pointer;
-=======
-    <title>p5.js Sketch</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
-    <style>
-        .bg-cover {
-        background-image: url('/Users/dachan/Desktop/designcamp/hand.png');
-        background-size: cover;  
-        background-position: center;  
-        background-repeat: no-repeat;  
-        background-attachment: fixed;
-        min-height: 100vh;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
->>>>>>> d5fc9219a5e5c44b4ebc4d172f2ad18a5e9b16a8
         }
     </style>
 </head>
 <body>
-<<<<<<< HEAD
     <canvas id="canvas"></canvas>
     
     <script>
@@ -70,6 +52,8 @@
                 this.rubOffset = 0;
                 this.depth = 0; // 3D depth for perspective
                 this.targetDepth = 0;
+                this.verticalOffset = 0; // Vertical movement offset
+                this.targetVerticalOffset = 0; // Target vertical position
                 
                 // Initialize spines
                 for (let i = 0; i < spineCount; i++) {
@@ -90,6 +74,7 @@
                 this.radius += (this.targetRadius - this.radius) * 0.1;
                 this.spineLength += (this.targetSpineLength - this.spineLength) * 0.1;
                 this.depth += (this.targetDepth - this.depth) * 0.1;
+                this.verticalOffset += (this.targetVerticalOffset - this.verticalOffset) * 0.1;
                 
                 // Update rubbing motion (up and down)
                 this.rubOffset += this.rubSpeed * this.rubDirection;
@@ -109,9 +94,9 @@
             }
 
             draw(ctx) {
-                // Draw main rectangle with trembling and rubbing motion
+                // Draw main circle with trembling, rubbing motion, and vertical movement
                 const trembleX = this.x + Math.sin(this.trembleTime * 0.5) * this.trembleIntensity;
-                const trembleY = this.y + this.rubOffset + Math.cos(this.trembleTime * 0.3) * this.trembleIntensity;
+                const trembleY = this.y + this.rubOffset + this.verticalOffset + Math.cos(this.trembleTime * 0.3) * this.trembleIntensity;
                 
                 // Draw main circle
                 ctx.fillStyle = '#000000';
@@ -197,7 +182,7 @@
             getSpinePositions() {
                 const positions = [];
                 const trembleX = this.x + Math.sin(this.trembleTime * 0.5) * this.trembleIntensity;
-                const trembleY = this.y + this.rubOffset + Math.cos(this.trembleTime * 0.3) * this.trembleIntensity;
+                const trembleY = this.y + this.rubOffset + this.verticalOffset + Math.cos(this.trembleTime * 0.3) * this.trembleIntensity;
                 
                 for (let i = 0; i < this.spineCount; i++) {
                     const originalAngle = this.spines[i].originalAngle;
@@ -363,12 +348,12 @@
         window.addEventListener('resize', resizeCanvas);
 
         // Create large circles
-        let circle1 = new Circle(canvas.width * 0.2, canvas.height * 0.5, 260);
-        let circle2 = new Circle(canvas.width * 0.8, canvas.height * 0.5, 260);
+        let circle1 = new Circle(canvas.width * 0.15, canvas.height * 0.5, 260);
+        let circle2 = new Circle(canvas.width * 0.85, canvas.height * 0.5, 260);
 
         // Interaction variables
-        let isMouseDown = false;
-        let mouseDownTime = 0;
+        let mouseX = canvas.width / 2;
+        let mouseY = canvas.height / 2;
         let lightningEffects = [];
         let tingleEffects = [];
         let tingleText = {
@@ -381,59 +366,33 @@
         };
 
         // Mouse event handlers
-        function handleMouseDown() {
-            isMouseDown = true;
-            mouseDownTime = Date.now();
-            
-            // Change rotation direction for both rectangles
-            circle1.rotationSpeed = (Math.random() - 0.5) * 0.02;
-            circle2.rotationSpeed = (Math.random() - 0.5) * 0.02;
-            
-            // Set opposite rubbing directions for the rectangles
-            const direction = Math.random() < 0.5 ? 1 : -1;
-            circle1.rubDirection = direction;
-            circle2.rubDirection = -direction; // Opposite direction
-            
-            lightningEffects = [];
-            tingleEffects = []; // Clear previous tingle effects
-            tingleText.visible = false;
-            tingleText.scale = 0;
-            tingleText.targetScale = 0;
-            tingleText.alpha = 0;
+        function handleMouseMove(e) {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
         }
 
-        function handleMouseUp() {
-            isMouseDown = false;
-            mouseDownTime = 0;
-            // Reset circles to original positions
-            circle1.targetX = circle1.originalX;
-            circle1.targetY = circle1.originalY;
-            circle1.targetRadius = circle1.originalRadius;
-            circle1.targetSpineLength = 135; // Updated to match new scale
-            circle1.setTrembleIntensity(0);
-            
-            circle2.targetX = circle2.originalX;
-            circle2.targetY = circle2.originalY;
-            circle2.targetRadius = circle2.originalRadius;
-            circle2.targetSpineLength = 135; // Updated to match new scale
-            circle2.setTrembleIntensity(0);
-            
-            lightningEffects = [];
-            tingleEffects = []; // Clear tingle effects on release
+        function handleTouchMove(e) {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            mouseX = touch.clientX - rect.left;
+            mouseY = touch.clientY - rect.top;
         }
 
-        canvas.addEventListener('mousedown', handleMouseDown);
-        canvas.addEventListener('mouseup', handleMouseUp);
-        canvas.addEventListener('mouseleave', handleMouseUp);
+        canvas.addEventListener('mousemove', handleMouseMove);
+        canvas.addEventListener('mouseleave', () => {
+            // Keep circles in place when mouse leaves
+        });
 
         // Touch support
+        canvas.addEventListener('touchmove', handleTouchMove);
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            handleMouseDown();
-        });
-        canvas.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            handleMouseUp();
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            mouseX = touch.clientX - rect.left;
+            mouseY = touch.clientY - rect.top;
         });
 
         function checkCirclesOverlapping() {
@@ -468,71 +427,76 @@
             // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            if (isMouseDown) {
-                // Calculate trembling intensity based on how long mouse has been held
-                const holdTime = (Date.now() - mouseDownTime) / 1000; // seconds
-                const trembleIntensity = Math.min(holdTime * 2, 12); // Increased max trembling for rubbing effect
+            // First circle follows mouse
+            circle1.targetX = mouseX;
+            circle1.targetY = mouseY;
+            circle1.targetVerticalOffset = 0;
+            
+            // Second circle stays in fixed position
+            circle2.targetX = circle2.originalX;
+            circle2.targetY = circle2.originalY;
+            circle2.targetVerticalOffset = 0;
+            
+            // Check if circles are overlapping
+            const overlap = checkCirclesOverlapping();
+            if (overlap) {
+                // Set trembling intensity when overlapping
+                circle1.setTrembleIntensity(8);
+                circle2.setTrembleIntensity(8);
                 
-                // Set trembling intensity for both rectangles
-                circle1.setTrembleIntensity(trembleIntensity);
-                circle2.setTrembleIntensity(trembleIntensity);
+                // Increase rubbing motion when overlapping
+                circle1.rubSpeed = 0.12;
+                circle2.rubSpeed = 0.12;
                 
-                // Scale up and move circles closer to allow overlap
-                const centerX = canvas.width / 2;
-                circle1.targetX = centerX - 130; // Closer positioning for overlap
-                circle2.targetX = centerX + 130; // Closer positioning for overlap
-                circle1.targetRadius = 423; // Increased by 30%
-                circle2.targetRadius = 423; // Increased by 30%
-                circle1.targetSpineLength = 234; // Longer spines for rubbing
-                circle2.targetSpineLength = 234; // Longer spines for rubbing
+                // Set opposite rotation directions
+                circle1.rotationSpeed = 0.02;
+                circle2.rotationSpeed = -0.02;
                 
-                // Check if circles are overlapping and spines are rubbing
-                const overlap = checkCirclesOverlapping();
-                if (overlap && checkSpinesTouching()) {
-                    // Increase rubbing motion when overlapping
-                    circle1.rubSpeed = 0.08; // Faster rubbing when overlapping
-                    circle2.rubSpeed = 0.08;
+                // Set opposite rubbing directions
+                circle1.rubDirection = 1;
+                circle2.rubDirection = -1;
+                
+                if (!tingleText.visible) {
+                    tingleText.visible = true;
+                    tingleText.alpha = 1;
+                    tingleText.scale = 0; // Start from 0 scale
+                    tingleText.targetScale = 1.5; // Target scale for quick appearance
                     
-
-                    
-                    if (!tingleText.visible) {
-                        tingleText.visible = true;
-                        tingleText.alpha = 1;
-                        
-                        // Create lightning effects - more and spread across screen
-                        for (let i = 0; i < 15; i++) {
-                            lightningEffects.push(new LightningEffect(
-                                Math.random() * canvas.width,
-                                Math.random() * canvas.height
-                            ));
-                        }
-                        
-                        // Create multiple tingle effects radiating outward
-                        for (let i = 0; i < 12; i++) {
-                            tingleEffects.push(new TingleEffect(
-                                canvas.width / 2 + (Math.random() - 0.5) * 300,
-                                canvas.height / 2 + (Math.random() - 0.5) * 250
-                            ));
-                        }
-                    }
-                    
-                    // Create additional tingle effects continuously while rubbing
-                    if (Math.random() < 0.5) { // 50% chance each frame when overlapping
-                        tingleEffects.push(new TingleEffect(
-                            canvas.width / 2 + (Math.random() - 0.5) * 300,
-                            canvas.height / 2 + (Math.random() - 0.5) * 250
+                    // Create lightning effects
+                    for (let i = 0; i < 8; i++) {
+                        lightningEffects.push(new LightningEffect(
+                            Math.random() * canvas.width,
+                            Math.random() * canvas.height
                         ));
                     }
                     
-                    // Scale up text while holding
-                    tingleText.targetScale = Math.min(tingleText.targetScale + 0.03, 2.5);
-                } else {
-                    // Normal rubbing speed when not overlapping
-                    circle1.rubSpeed = 0.03;
-                    circle2.rubSpeed = 0.03;
-                    
-
+                    // Create tingle effects
+                    for (let i = 0; i < 6; i++) {
+                        tingleEffects.push(new TingleEffect(
+                            (circle1.x + circle2.x) / 2 + (Math.random() - 0.5) * 300,
+                            (circle1.y + circle2.y) / 2 + (Math.random() - 0.5) * 250
+                        ));
+                    }
                 }
+                
+                // Create additional tingle effects continuously while overlapping
+                if (Math.random() < 0.2) {
+                    tingleEffects.push(new TingleEffect(
+                        (circle1.x + circle2.x) / 2 + (Math.random() - 0.5) * 300,
+                        (circle1.y + circle2.y) / 2 + (Math.random() - 0.5) * 250
+                    ));
+                }
+                
+                // Scale up text while overlapping
+                tingleText.targetScale = Math.min(tingleText.targetScale + 0.03, 2.5);
+            } else {
+                // Reset when not overlapping
+                circle1.setTrembleIntensity(0);
+                circle2.setTrembleIntensity(0);
+                circle1.rubSpeed = 0.03;
+                circle2.rubSpeed = 0.03;
+                circle1.rotationSpeed = 0;
+                circle2.rotationSpeed = 0;
             }
             
             // Update circles
@@ -559,8 +523,8 @@
             
             // Update and draw tingle text (front layer)
             if (tingleText.visible) {
-                tingleText.scale += (tingleText.targetScale - tingleText.scale) * 0.1;
-                tingleText.alpha -= 0.005;
+                tingleText.scale += (tingleText.targetScale - tingleText.scale) * 0.3; // Faster scale animation
+                tingleText.alpha -= 0.02; // Faster fade out
                 
                 // Draw tingle text with bold stroke
                 ctx.save();
@@ -597,158 +561,3 @@
     </script>
 </body>
 </html>
-=======
-    
-    <script>
-        let fractalBranches = [];
-        let maxBranches = 2000;
-        let branchSpeed = 1.8;
-        let branchAngle = 0.5;
-        let branchLength = 10;
-        let maxGenerations = 10;
-        let growthPoints = []; // Track active growth points
-
-        function setup() {
-            createCanvas(windowWidth, windowHeight);
-            background(255);
-            stroke(0);
-            strokeWeight(0.8);
-            noFill();
-        }
-
-        function draw() {
-            background(255);
-            
-            // Update and draw all fractal branches
-            for (let i = fractalBranches.length - 1; i >= 0; i--) {
-                let branch = fractalBranches[i];
-                branch.update();
-                branch.draw();
-                
-                // Only remove branches that are extremely old or have too many generations
-                if (branch.generation > maxGenerations || branch.life < 0.05) {
-                    fractalBranches.splice(i, 1);
-                }
-            }
-            
-            // Limit total number of branches for performance
-            if (fractalBranches.length > maxBranches) {
-                fractalBranches.splice(0, fractalBranches.length - maxBranches);
-            }
-        }
-
-        function mousePressed() {
-            // Create new fractal growth point only on click
-            createFractalGrowthPoint(mouseX, mouseY);
-        }
-
-        function touchStarted() {
-            // Create new fractal growth point only on touch
-            createFractalGrowthPoint(mouseX, mouseY);
-            return false; // Prevent default touch behavior
-        }
-
-        function createFractalGrowthPoint(x, y) {
-            // Create multiple initial branches from the click point for richer growth
-            let numInitialBranches = 4 + floor(random(4)); // 4-7 initial branches
-            
-            for (let i = 0; i < numInitialBranches; i++) {
-                let angle = (TWO_PI / numInitialBranches) * i + random(-0.3, 0.3);
-                createFractalBranch(x, y, 0, angle);
-            }
-        }
-
-        function createFractalBranch(x, y, generation, angle) {
-            if (generation < maxGenerations && fractalBranches.length < maxBranches) {
-                fractalBranches.push(new FractalBranch(x, y, generation, angle));
-            }
-        }
-
-        class FractalBranch {
-            constructor(x, y, generation, angle) {
-                this.x = x;
-                this.y = y;
-                this.startX = x;
-                this.startY = y;
-                this.angle = angle;
-                this.generation = generation;
-                this.length = branchLength * (0.7 + random(0.6));
-                this.currentLength = 0;
-                this.life = 1.0;
-                this.growthRate = branchSpeed * (0.4 + random(0.8));
-                this.branchesCreated = false;
-                this.branchAngle1 = this.angle + branchAngle * (0.5 + random(1.0));
-                this.branchAngle2 = this.angle - branchAngle * (0.5 + random(1.0));
-                this.endX = this.x;
-                this.endY = this.y;
-                this.creationTime = frameCount;
-                this.branchDelay = random(15, 40); // Delay before creating branches
-                this.branchInterval = random(25, 50); // Interval between branch creations
-                this.lastBranchTime = 0;
-            }
-
-            update() {
-                // Continuous growth - never stops
-                this.currentLength += this.growthRate;
-                
-                // Calculate end position with organic movement
-                this.endX = this.startX + cos(this.angle) * this.currentLength;
-                this.endY = this.startY + sin(this.angle) * this.currentLength;
-                
-                // Add organic, flowing movement
-                let time = frameCount * 0.003;
-                this.endX += sin(time + this.generation * 0.4) * 1.5;
-                this.endY += cos(time + this.generation * 0.6) * 1.5;
-                
-                // Create branches continuously after initial delay
-                if (frameCount - this.creationTime > this.branchDelay && 
-                    this.generation < maxGenerations - 1 && 
-                    fractalBranches.length < maxBranches - 3) {
-                    
-                    // Create branches at intervals for continuous growth
-                    if (frameCount - this.lastBranchTime > this.branchInterval) {
-                        this.createBranches();
-                        this.lastBranchTime = frameCount;
-                    }
-                }
-                
-                // Very slow fade to maintain persistence
-                this.life -= 0.0002;
-            }
-
-            createBranches() {
-                if (fractalBranches.length < maxBranches - 2) {
-                    // Create two main branches
-                    createFractalBranch(this.endX, this.endY, this.generation + 1, this.branchAngle1);
-                    createFractalBranch(this.endX, this.endY, this.generation + 1, this.branchAngle2);
-                    
-                    // Create additional branches for more complexity
-                    if (random() < 0.5) {
-                        let thirdAngle = this.angle + random(-branchAngle * 1.5, branchAngle * 1.5);
-                        createFractalBranch(this.endX, this.endY, this.generation + 1, thirdAngle);
-                    }
-                    
-                    // Occasionally create a fourth branch
-                    if (random() < 0.3) {
-                        let fourthAngle = this.angle + random(-branchAngle * 2, branchAngle * 2);
-                        createFractalBranch(this.endX, this.endY, this.generation + 1, fourthAngle);
-                    }
-                }
-            }
-
-            draw() {
-                if (this.currentLength > 0) {
-                    stroke(0, this.life * 255);
-                    strokeWeight(max(0.4, 1.2 - this.generation * 0.08));
-                    line(this.startX, this.startY, this.endX, this.endY);
-                }
-            }
-        }
-
-        function windowResized() {
-            resizeCanvas(windowWidth, windowHeight);
-        }
-    </script>
-</body>
-</html>
->>>>>>> d5fc9219a5e5c44b4ebc4d172f2ad18a5e9b16a8
