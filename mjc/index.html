@@ -2,32 +2,39 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <title>Side Road</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <main>
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="splash-screen">
+        <img src="/Users/dachan/Desktop/designcamp/mjc/source/title.svg" class="title-svg" id="titleImage"/>
+        <img src="/Users/dachan/Desktop/designcamp/mjc/source/dead_plant.svg" class="left-svg" id="leftImage"/>
+        <img src="/Users/dachan/Desktop/designcamp/mjc/source/warning.svg" class="right-svg-top" id="rightTopImage"/>
+        <img src="/Users/dachan/Desktop/designcamp/mjc/source/finger.svg" class="right-svg-bottom" id="rightBottomImage"/>
+        <div class="click-text" id="clickText">
+            <span class="click-main">화면을 클릭하세요.</span>
+        </div>
+    </div>
+    
+    <main id="mainContent">
         <div class="map-section">
             <img src="/Users/dachan/Desktop/designcamp/mjc/source/home.svg" class="home-svg"/>
             <div id="dotCanvas" class="dot-canvas"></div>
+            <div id="titleText" class="title-text">어쩌다보니 옆길로 새버렸다.</div>
         </div>
         
-        <div class="choice-section">
+        <div class="choice-section" id="choiceSection">
             <div class="illust-container">
+                <div class="way-title" id="wayTitle" style="display: none;">어디로 갈까?</div>
                 <img src="/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg" class="door-closed-svg"/>
             </div>
             <div class="button-container" id="initialButtonContainer">
                 <button id="generateDot1" class="dot-btn">문을 나선다.</button>
             </div>
-            <div class="button-container" id="choiceButtonContainer" style="display: none;">
-                <button id="goUsualWay" class="dot-btn">> 늘 가던 길로 간다.</button>
-                <button id="goNewWay" class="dot-btn">> 새로운 길로 간다.</button>
-            </div>
         </div>
     </main>
-    
-    <!-- JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
