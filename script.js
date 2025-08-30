@@ -85,8 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const GRID_ROWS = 3;
     const TOTAL_SECTIONS = GRID_COLS * GRID_ROWS;
     
-    // Helper function to change image with fade effect
-    function changeImageWithFade(newImageSrc, duration = 300) {
+    // Helper function to change image with fade effect - optimized for speed
+    function changeImageWithFade(newImageSrc, duration = 200) {
         return new Promise((resolve) => {
             doorImage.style.transition = `opacity ${duration}ms ease-in-out`;
             doorImage.style.opacity = '0';
@@ -94,13 +94,13 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 doorImage.src = newImageSrc;
                 doorImage.style.opacity = '1';
-                setTimeout(resolve, duration);
-            }, duration);
+                setTimeout(resolve, duration/2); // Reduce second delay by half
+            }, duration/2); // Reduce first delay by half
         });
     }
     
-    // Helper function to change text with fade effect
-    function changeTextWithFade(element, newText, duration = 300) {
+    // Helper function to change text with fade effect - optimized for speed
+    function changeTextWithFade(element, newText, duration = 200) {
         return new Promise((resolve) => {
             element.style.transition = `opacity ${duration}ms ease-in-out`;
             element.style.opacity = '0';
@@ -108,13 +108,13 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 element.innerHTML = newText;
                 element.style.opacity = '1';
-                setTimeout(resolve, duration);
-            }, duration);
+                setTimeout(resolve, duration/2); // Reduce second delay by half
+            }, duration/2); // Reduce first delay by half
         });
     }
     
-    // Helper function to hide/show elements with fade effect
-    function fadeElement(element, show, duration = 300) {
+    // Helper function to hide/show elements with fade effect - optimized for speed
+    function fadeElement(element, show, duration = 200) {
         return new Promise((resolve) => {
             element.style.transition = `opacity ${duration}ms ease-in-out`;
             element.style.opacity = show ? '1' : '0';
@@ -554,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 150);
             
             // Apply fade effects with consistent timing
-            const fadeDuration = 500;
+            const fadeDuration = 250;
             await Promise.all([
                 changeImageWithFade("source/alert.svg", fadeDuration),
                 changeTextWithFade(wayTitle, "가다보니 내가 길을 잃었다. 도움을 요청할까?", fadeDuration),
@@ -575,13 +575,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const useMapButton = document.createElement('button');
             useMapButton.id = 'useMap';
             useMapButton.className = 'dot-btn';
-            useMapButton.textContent = '지도 앱을 켜고 혼자 간다.';
+            useMapButton.textContent = '지도 앱을 켜고 혼자 간다';
             
             // Create second choice button - ask for directions
             const askDirectionsButton = document.createElement('button');
             askDirectionsButton.id = 'askDirections';
             askDirectionsButton.className = 'dot-btn';
-            askDirectionsButton.textContent = '가는 사람을 붙잡고 길을 물어본다.';
+            askDirectionsButton.textContent = '가는 사람을 붙잡고 길을 물어본다';
             
             // Add click events for lost choice buttons
             useMapButton.addEventListener('click', async function() {
@@ -686,8 +686,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             wayTitle.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                             wayTitle.style.opacity = '0';
                             
-                            // Wait for fade out to complete
-                            await new Promise(resolve => setTimeout(resolve, fadeDuration));
+                            // Wait for fade out to complete (reduced time)
+                            await new Promise(resolve => setTimeout(resolve, fadeDuration/2));
                             
                             // Change image and text
                             currentImage.src = "source/sunset.svg";
@@ -932,13 +932,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const ignorePersonButton = document.createElement('button');
             ignorePersonButton.id = 'ignorePerson';
             ignorePersonButton.className = 'dot-btn';
-            ignorePersonButton.textContent = '무시하고 갈 길을 갔다.';
+            ignorePersonButton.textContent = '무시하고 갈 길을 간다';
             
             // Create second choice button
             const talkToPersonButton = document.createElement('button');
             talkToPersonButton.id = 'talkToPerson';
             talkToPersonButton.className = 'dot-btn';
-            talkToPersonButton.textContent = '말을 걸어본다.';
+            talkToPersonButton.textContent = '말을 걸어본다';
             
             // Add click events for lost person buttons
             ignorePersonButton.addEventListener('click', async function() {
@@ -954,7 +954,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 150);
                 
                 // Apply fade effects with consistent timing
-                const fadeDuration = 500;
+                const fadeDuration = 250;
                 await Promise.all([
                     changeImageWithFade("source/alert.svg", fadeDuration),
                     changeTextWithFade(wayTitle, "가다보니 내가 길을 잃었다. 도움을 요청할까?", fadeDuration),
@@ -975,13 +975,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const useMapButton = document.createElement('button');
                 useMapButton.id = 'useMapIgnore';
                 useMapButton.className = 'dot-btn';
-                useMapButton.textContent = '지도 앱을 켜고 혼자 간다.';
+                useMapButton.textContent = '지도 앱을 켜고 혼자 간다';
                 
                 // Create second choice button - ask for directions
                 const askDirectionsButton = document.createElement('button');
                 askDirectionsButton.id = 'askDirectionsIgnore';
                 askDirectionsButton.className = 'dot-btn';
-                askDirectionsButton.textContent = '가는 사람을 붙잡고 길을 물어본다.';
+                askDirectionsButton.textContent = '가는 사람을 붙잡고 길을 물어본다';
                 
                 // Add click events for lost choice buttons
                 useMapButton.addEventListener('click', async function() {
@@ -1237,8 +1237,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             wayTitle.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                             wayTitle.style.opacity = '0';
                             
-                            // Wait for fade out to complete
-                            await new Promise(resolve => setTimeout(resolve, fadeDuration));
+                            // Wait for fade out to complete (reduced time)
+                            await new Promise(resolve => setTimeout(resolve, fadeDuration/2));
                             
                             // Change image and text
                             currentImage.src = "source/sunset.svg";
@@ -1324,7 +1324,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 150);
                 
                 // Apply fade effects with consistent timing
-                const fadeDuration = 500;
+                const fadeDuration = 250;
                 await Promise.all([
                     changeImageWithFade("source/map_man_1.svg", fadeDuration),
                     changeTextWithFade(wayTitle, "말 걸었더니 길 잃은게 아니라고 한다.", fadeDuration),
@@ -1361,7 +1361,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }, 150);
                     
                     // Apply fade effects with consistent timing
-                    const fadeDuration = 500;
+                    const fadeDuration = 250;
                     await Promise.all([
                         changeImageWithFade("source/door_closed.svg", fadeDuration),
                         changeTextWithFade(wayTitle, "사이비로 취급당하며 욕먹었다...<br>울적해진 마음에 집으로 돌아갔다.", fadeDuration),
@@ -1398,7 +1398,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }, 150);
                         
                         // Step 1: Change to door_opened.svg (no fade) and fade out buttons
-                        const fadeDuration = 500; // 더 자연스러운 타이밍으로 조정
+                        const fadeDuration = 250; // 더 자연스러운 타이밍으로 조정
                         
                         // Change door image immediately without fade
                         const doorImage = document.querySelector('.illust-container img');
@@ -1423,8 +1423,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             wayTitle.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                             wayTitle.style.opacity = '0';
                             
-                            // Wait for fade out to complete
-                            await new Promise(resolve => setTimeout(resolve, fadeDuration));
+                            // Wait for fade out to complete (reduced time)
+                            await new Promise(resolve => setTimeout(resolve, fadeDuration/2));
                             
                             // Change image and text
                             currentImage.src = "source/sunset.svg";
@@ -1560,13 +1560,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const enterStoreButton = document.createElement('button');
         enterStoreButton.id = 'enterStore';
         enterStoreButton.className = 'dot-btn';
-        enterStoreButton.textContent = '들어가본다.';
+        enterStoreButton.textContent = '살포시 들어가본다';
         
         // Create second new choice button
         const notEnterStoreButton = document.createElement('button');
         notEnterStoreButton.id = 'notEnterStore';
         notEnterStoreButton.className = 'dot-btn';
-        notEnterStoreButton.textContent = '들어가지 않는다.';
+        notEnterStoreButton.textContent = '들어가지 않는다';
         
         // Add click events for new buttons
         enterStoreButton.addEventListener('click', async function() {
@@ -1596,13 +1596,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const apologizeButton = document.createElement('button');
             apologizeButton.id = 'apologize';
             apologizeButton.className = 'dot-btn';
-            apologizeButton.textContent = '만나서 사과를 한다.';
+            apologizeButton.textContent = '만나서 사과를 한다';
             
             // Create second apology choice button
             const leaveQuietlyButton = document.createElement('button');
             leaveQuietlyButton.id = 'leaveQuietly';
             leaveQuietlyButton.className = 'dot-btn';
-            leaveQuietlyButton.textContent = '사과없이 조용히 나가기로 한다.';
+            leaveQuietlyButton.textContent = '사과없이 조용히 나가기로 한다';
             
             // Add click events for apology buttons
             apologizeButton.addEventListener('click', async function() {
@@ -1632,13 +1632,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const makeExcuseButton = document.createElement('button');
                 makeExcuseButton.id = 'makeExcuse';
                 makeExcuseButton.className = 'dot-btn';
-                makeExcuseButton.textContent = '구차하게 변명을 한다.';
+                makeExcuseButton.textContent = '구차하게 변명을 한다';
                 
                 // Create second escape choice button
                 const runAwayButton = document.createElement('button');
                 runAwayButton.id = 'runAway';
                 runAwayButton.className = 'dot-btn';
-                runAwayButton.textContent = '빠르게 도망간다.';
+                runAwayButton.textContent = '빠르게 도망간다';
                 
                 // Add click events for escape buttons
                 makeExcuseButton.addEventListener('click', async function() {
@@ -1846,7 +1846,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const runHomeButton = document.createElement('button');
                     runHomeButton.id = 'runHome';
                     runHomeButton.className = 'dot-btn';
-                    runHomeButton.textContent = '그대로 집으로 뛰어간다.';
+                    runHomeButton.textContent = '그대로 집으로 뛰어간다';
                     
                     // Add click event for run home button
                     runHomeButton.addEventListener('click', async function() {
@@ -2053,13 +2053,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const waterPlantButton = document.createElement('button');
                 waterPlantButton.id = 'waterPlant';
                 waterPlantButton.className = 'dot-btn';
-                waterPlantButton.textContent = '물을 준다.';
+                waterPlantButton.textContent = '물을 준다';
                 
                 // Create second plant choice button
                 const notWaterPlantButton = document.createElement('button');
                 notWaterPlantButton.id = 'notWaterPlant';
                 notWaterPlantButton.className = 'dot-btn';
-                notWaterPlantButton.textContent = '물을 주지 않는다.';
+                notWaterPlantButton.textContent = '물을 주지 않는다';
                 
                 // Add click events for plant buttons
                 waterPlantButton.addEventListener('click', async function() {
@@ -2313,7 +2313,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             const wayTitle = document.getElementById('wayTitle');
                             const currentContainer = document.getElementById('homeArrivalButtonContainer');
-                            const fadeDuration = 500;
+                            const fadeDuration = 250;
                             
                             // Add button click effect
                             this.style.transform = 'scale(0.95)';
@@ -2580,13 +2580,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                 
                                 console.log('Changing image to none.svg');
                                 // Use direct image change instead of fadeImage function
-                                currentImage.style.transition = 'opacity 300ms ease-in-out';
+                                currentImage.style.transition = 'opacity 150ms ease-in-out';
                                 currentImage.style.opacity = '0';
                                 
                                 setTimeout(() => {
                                     currentImage.src = "source/none.svg";
                                     currentImage.style.opacity = '1';
-                                }, 300);
+                                }, 150);
                             } else {
                                 console.error('Image element not found for none.svg');
                             }
@@ -2844,7 +2844,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                             const wayTitle = document.getElementById('wayTitle');
                             const currentContainer = document.getElementById('homeArrivalButtonContainer');
-                            const fadeDuration = 500;
+                            const fadeDuration = 250;
                             
                             // Add button click effect
                             this.style.transform = 'scale(0.95)';
@@ -3189,7 +3189,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     setTimeout(() => {
                                         doorImage.src = "source/merong.svg";
                                         doorImage.style.opacity = '1';
-                                    }, 300); // Wait for fade out to complete
+                                    }, 150); // Reduced wait time
                                 }
                             }
                             

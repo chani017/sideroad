@@ -193,7 +193,7 @@
     position: absolute;
     right: -5vw;
     top: -60vh;
-    width: 80vw;
+    width: 70vw;
     height: auto;
     opacity: 0;
     transform: rotate(20deg);
@@ -205,7 +205,7 @@
     position: absolute;
     right: 40vw;
     top: 25vh;
-    width: 900px;
+    width: 60vw;
     height: auto;
     opacity: 0;
     transform: rotate(-10deg);
