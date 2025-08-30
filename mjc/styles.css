@@ -181,7 +181,7 @@
     position: absolute;
     left: 25vw;
     top: 20vh;
-    width: 50vw;   /* 1920px 기준 750px */
+    width: 750px;
     height: auto;
     opacity: 0;
     transform: rotate(-15deg);
@@ -191,9 +191,9 @@
 
 .right-svg-top {
     position: absolute;
-    right: -5vw;
-    top: -60vh;
-    width: 80vw;
+    right: 15vw;
+    top: -50vh;
+    width: 1000px;
     height: auto;
     opacity: 0;
     transform: rotate(20deg);
