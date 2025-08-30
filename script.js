@@ -134,11 +134,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Function to toggle door image
     function toggleDoorImage() {
         if (isDoorOpen) {
-            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg");
+            changeImageWithFade("source/door_closed.svg");
             isDoorOpen = false;
             console.log('Door closed');
         } else {
-            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg");
+            changeImageWithFade("source/door_opened.svg");
             isDoorOpen = true;
             console.log('Door opened');
         }
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
             hasStartedGenerating = true;
             
             // First change to door_opened.svg
-            doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+            doorImage.src = "source/door_opened.svg";
             
             // Wait a moment then start fade out
             setTimeout(() => {
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 setTimeout(() => {
                     // Change to way image
-                    doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/way.svg";
+                    doorImage.src = "source/way.svg";
                     doorImage.style.opacity = '1';
                     
                     // Show way title
@@ -513,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Apply fade effects
         await Promise.all([
-            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/construction.svg"),
+            changeImageWithFade("source/construction.svg"),
             changeTextWithFade(wayTitle, "늘 가던 길로 들어갔는데 공사중이었다.<br>새로운 길로 다시 찾아보자."),
             fadeElement(choiceButtonContainer, false)
         ]);
@@ -556,7 +556,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Apply fade effects with consistent timing
             const fadeDuration = 500;
             await Promise.all([
-                changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/alert.svg", fadeDuration),
+                changeImageWithFade("source/alert.svg", fadeDuration),
                 changeTextWithFade(wayTitle, "가다보니 내가 길을 잃었다. 도움을 요청할까?", fadeDuration),
                 currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
             ]);
@@ -598,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Apply fade effects with consistent timing
                 await Promise.all([
-                    changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/warning.svg", fadeDuration),
+                    changeImageWithFade("source/warning.svg", fadeDuration),
                     changeTextWithFade(wayTitle, "앗! 지도 앱이 이상한 곳을 알려줘서 결국 집에 늦게 도착했다.", fadeDuration),
                     currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
                 ]);
@@ -634,7 +634,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Apply fade effects with consistent timing
                     await Promise.all([
-                        changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg", fadeDuration),
+                        changeImageWithFade("source/door_closed.svg", fadeDuration),
                         changeTextWithFade(wayTitle, "힘겹게 방 문 앞에 섰다.", fadeDuration),
                         currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
                     ]);
@@ -670,7 +670,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Step 1: Change to door_opened.svg and fade out
                         await Promise.all([
-                            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg", fadeDuration),
+                            changeImageWithFade("source/door_opened.svg", fadeDuration),
                             currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
                         ]);
                         
@@ -690,7 +690,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             await new Promise(resolve => setTimeout(resolve, fadeDuration));
                             
                             // Change image and text
-                            currentImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                            currentImage.src = "source/sunset.svg";
                             wayTitle.innerHTML = "오늘 하루도 끝났다...";
                             
                             // Fade in new content
@@ -773,7 +773,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Apply fade effects with consistent timing
                 await Promise.all([
-                    changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg", fadeDuration),
+                    changeImageWithFade("source/door_closed.svg", fadeDuration),
                     changeTextWithFade(wayTitle, "길을 아는 사람이 아무도 없어 <br>결국 밤이 되어 빙빙 돌아 집으로 돌아갔다.", fadeDuration),
                     currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
                 ]);
@@ -811,7 +811,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Change door image immediately without fade
                     const doorImage = document.querySelector('.illust-container img');
                     if (doorImage) {
-                        doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+                        doorImage.src = "source/door_opened.svg";
                     }
                     
                     // Hide current choice button
@@ -835,7 +835,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         await new Promise(resolve => setTimeout(resolve, fadeDuration));
                         
                         // Change image and text
-                        currentImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                        currentImage.src = "source/sunset.svg";
                         wayTitle.innerHTML = "오늘 하루도 끝났다...";
                         
                         // Fade in new content
@@ -913,7 +913,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Apply fade effects
             await Promise.all([
-                changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/map_man_0.svg"),
+                changeImageWithFade("source/map_man_0.svg"),
                 changeTextWithFade(wayTitle, "가다가 길을 잃은 것처럼 보이는 사람을 만났다.<br>먼저 말을 걸어 볼까?"),
                 currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
             ]);
@@ -956,7 +956,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Apply fade effects with consistent timing
                 const fadeDuration = 500;
                 await Promise.all([
-                    changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/alert.svg", fadeDuration),
+                    changeImageWithFade("source/alert.svg", fadeDuration),
                     changeTextWithFade(wayTitle, "가다보니 내가 길을 잃었다. 도움을 요청할까?", fadeDuration),
                     currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
                 ]);
@@ -998,7 +998,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Apply fade effects with consistent timing
                     await Promise.all([
-                        changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/warning.svg", fadeDuration),
+                        changeImageWithFade("source/warning.svg", fadeDuration),
                         changeTextWithFade(wayTitle, "앗! 지도 앱이 이상한 곳을 알려줘서 결국 집에 늦게 도착했다.", fadeDuration),
                         currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
                     ]);
@@ -1034,7 +1034,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Apply fade effects with consistent timing
                         await Promise.all([
-                            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg", fadeDuration),
+                            changeImageWithFade("source/door_closed.svg", fadeDuration),
                             changeTextWithFade(wayTitle, "힘겹게 방 문 앞에 섰다.", fadeDuration),
                             currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
                         ]);
@@ -1072,7 +1072,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Change door image immediately without fade
                             const doorImage = document.querySelector('.illust-container img');
                             if (doorImage) {
-                                doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+                                doorImage.src = "source/door_opened.svg";
                             }
                             
                             // Hide current choice button
@@ -1096,7 +1096,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 await new Promise(resolve => setTimeout(resolve, fadeDuration));
                                 
                                 // Change image and text
-                                currentImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                                currentImage.src = "source/sunset.svg";
                                 wayTitle.innerHTML = "오늘 하루도 끝났다...";
                                 
                                 // Fade in new content
@@ -1179,7 +1179,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Apply fade effects with consistent timing
                     await Promise.all([
-                        changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg", fadeDuration),
+                        changeImageWithFade("source/door_closed.svg", fadeDuration),
                         changeTextWithFade(wayTitle, "길을 아는 사람이 아무도 없어 결국 밤이 되어 빙빙 돌아 집으로 돌아갔다.", fadeDuration),
                         currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
                     ]);
@@ -1217,7 +1217,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Change door image immediately without fade
                         const doorImage = document.querySelector('.illust-container img');
                         if (doorImage) {
-                            doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+                            doorImage.src = "source/door_opened.svg";
                         }
                         
                         // Hide current choice button
@@ -1241,7 +1241,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             await new Promise(resolve => setTimeout(resolve, fadeDuration));
                             
                             // Change image and text
-                            currentImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                            currentImage.src = "source/sunset.svg";
                             wayTitle.innerHTML = "오늘 하루도 끝났다...";
                             
                             // Fade in new content
@@ -1326,7 +1326,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Apply fade effects with consistent timing
                 const fadeDuration = 500;
                 await Promise.all([
-                    changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/map_man_1.svg", fadeDuration),
+                    changeImageWithFade("source/map_man_1.svg", fadeDuration),
                     changeTextWithFade(wayTitle, "말 걸었더니 길 잃은게 아니라고 한다.", fadeDuration),
                     currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
                 ]);
@@ -1363,7 +1363,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Apply fade effects with consistent timing
                     const fadeDuration = 500;
                     await Promise.all([
-                        changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg", fadeDuration),
+                        changeImageWithFade("source/door_closed.svg", fadeDuration),
                         changeTextWithFade(wayTitle, "사이비로 취급당하며 욕먹었다...<br>울적해진 마음에 집으로 돌아갔다.", fadeDuration),
                         currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
                     ]);
@@ -1403,7 +1403,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Change door image immediately without fade
                         const doorImage = document.querySelector('.illust-container img');
                         if (doorImage) {
-                            doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+                            doorImage.src = "source/door_opened.svg";
                         }
                         
                         // Hide current choice button
@@ -1427,7 +1427,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             await new Promise(resolve => setTimeout(resolve, fadeDuration));
                             
                             // Change image and text
-                            currentImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                            currentImage.src = "source/sunset.svg";
                             wayTitle.innerHTML = "오늘 하루도 끝났다...";
                             
                             // Fade in new content
@@ -1541,7 +1541,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Apply fade effects
         await Promise.all([
-            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/store.svg"),
+            changeImageWithFade("source/store.svg"),
             changeTextWithFade(wayTitle, "못 보던 가게가 생겼다.<br>들어가 볼까?"),
             fadeElement(choiceButtonContainer, false)
         ]);
@@ -1577,7 +1577,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Apply fade effects
             await Promise.all([
-                changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/warning.svg"),
+                changeImageWithFade("source/warning.svg"),
                 changeTextWithFade(wayTitle, "앗 알고보니 가게가 아니고 누군가가 사는 집이었다..!<br>집주인에게 사과를 할까?"),
                 currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
             ]);
@@ -1613,7 +1613,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Apply fade effects
                 await Promise.all([
-                    changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/angry.svg"),
+                    changeImageWithFade("source/angry.svg"),
                     changeTextWithFade(wayTitle, "만나서 사과를 하기 전에 집에 들어온걸 들켜버렸다..!<br>화를 내면서 쫓아온다. 어떻게 하지?"),
                     currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                 ]);
@@ -1649,7 +1649,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Apply fade effects
                     await Promise.all([
-                        changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/punch.svg"),
+                        changeImageWithFade("source/punch.svg"),
                         changeTextWithFade(wayTitle, "변명이 통하지 않았다.<br>주먹을 맞고 쓰러졌다.<br>두 눈이 깜깜해진다..<br>(암전)"),
                         currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                     ]);
@@ -1678,7 +1678,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         // After fade to black is complete (3 seconds), start recovery sequence
                         setTimeout(() => {
                             // Change image to door_closed
-                            doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg";
+                            doorImage.src = "source/door_closed.svg";
                             
                             // Change text
                             wayTitle.innerHTML = "눈 떠보니 집으로 돌아왔다...";
@@ -1703,7 +1703,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 console.log('User chose to enter home');
                                 
                                 // Change image to door_opened
-                                doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+                                doorImage.src = "source/door_opened.svg";
                                 
                                 // Connect last circle to first circle (complete the loop)
                                 if (circles.length >= 2) {
@@ -1732,7 +1732,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         // After fade out, change to ending scene
                                         setTimeout(() => {
                                             // Change image to sunset
-                                            doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                                            doorImage.src = "source/sunset.svg";
                                             doorImage.style.opacity = '1';
                                             
                                             // Change text
@@ -1827,7 +1827,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Apply fade effects
                     await Promise.all([
-                        changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/run.svg"),
+                        changeImageWithFade("source/run.svg"),
                         changeTextWithFade(wayTitle, "달리기를 잘해서 덕분에 안 잡혔다!<br>운이 좋군."),
                         currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                     ]);
@@ -1857,7 +1857,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Apply fade effects
                         await Promise.all([
-                            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg"),
+                            changeImageWithFade("source/door_closed.svg"),
                             changeTextWithFade(wayTitle, "숨을 헐떡이며 겨우 문 앞에 도착했다."),
                             currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                         ]);
@@ -1882,7 +1882,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             console.log('User chose to enter home (run ending)');
                             
                             // Change image to door_opened
-                            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg");
+                            changeImageWithFade("source/door_opened.svg");
                             
                             // Connect last circle to first circle (complete the loop)
                             if (circles.length >= 2) {
@@ -1911,7 +1911,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     // After fade out, change to ending scene
                                     setTimeout(() => {
                                         // Change image to sunset
-                                        doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                                        doorImage.src = "source/sunset.svg";
                                         doorImage.style.opacity = '1';
                                         
                                         // Change text
@@ -2034,7 +2034,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Apply fade effects
                 await Promise.all([
-                    changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/dead_plant.svg"),
+                    changeImageWithFade("source/dead_plant.svg"),
                     changeTextWithFade(wayTitle, "조용히 나가다가 옆에서 말라가는 화분을 발견했다.<br>대신 물을 줘도 될까?"),
                     currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                 ]);
@@ -2070,7 +2070,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Apply fade effects
                     await Promise.all([
-                        changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/happy_plant.svg"),
+                        changeImageWithFade("source/happy_plant.svg"),
                         changeTextWithFade(wayTitle, "꽃이 감사하다고 인사한다."),
                         currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                     ]);
@@ -2100,7 +2100,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Apply fade effects
                         await Promise.all([
-                            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg"),
+                            changeImageWithFade("source/door_closed.svg"),
                             changeTextWithFade(wayTitle, "집에 도착했다."),
                             currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                         ]);
@@ -2125,7 +2125,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             console.log('User chose to enter home (happy ending)');
                             
                             // Change image to door_opened
-                            doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+                            doorImage.src = "source/door_opened.svg";
                             
                             // Connect last circle to first circle (complete the loop)
                             if (circles.length >= 2) {
@@ -2154,7 +2154,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     // After fade out, change to ending scene
                                     setTimeout(() => {
                                         // Change image to sunset
-                                        doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                                        doorImage.src = "source/sunset.svg";
                                         doorImage.style.opacity = '1';
                                         
                                         // Change text
@@ -2256,7 +2256,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Apply fade effects
                     await Promise.all([
-                        changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/badman.svg"),
+                        changeImageWithFade("source/badman.svg"),
                         changeTextWithFade(wayTitle, "꽃을 죽이다니. 나쁜 사람."),
                         currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                     ]);
@@ -2286,7 +2286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Apply fade effects
                         await Promise.all([
-                            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg"),
+                            changeImageWithFade("source/door_closed.svg"),
                             changeTextWithFade(wayTitle, "묘한 찝찝함을 느끼며 집으로 돌아갔다..."),
                             currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                         ]);
@@ -2325,7 +2325,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Change door image immediately without fade
                             const doorImage = document.querySelector('.illust-container img');
                             if (doorImage) {
-                                doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+                                doorImage.src = "source/door_opened.svg";
                             }
                             
                             // Hide current choice button
@@ -2349,7 +2349,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 await new Promise(resolve => setTimeout(resolve, fadeDuration));
                                 
                                 // Change image and text
-                                currentImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                                currentImage.src = "source/sunset.svg";
                                 wayTitle.innerHTML = "오늘 하루도 끝났다...";
                                 
                                 // Fade in new content
@@ -2472,7 +2472,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Apply fade effects
             await Promise.all([
-                changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/wonder.svg"),
+                changeImageWithFade("source/wonder.svg"),
                 changeTextWithFade(wayTitle, "바쁜데 나중에 가자.<br>근데 뭐하려고 했지?"),
                 currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
             ]);
@@ -2508,7 +2508,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Apply fade effects
                 await Promise.all([
-                    changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/bench.svg"),
+                    changeImageWithFade("source/bench.svg"),
                     changeTextWithFade(wayTitle, "친구를 만나러 공원에 도착했다.<br>벤치에 앉은 나는 옆자리에서 기묘함을 느낀다.<br>돌아볼까?"),
                     currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                 ]);
@@ -2584,7 +2584,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 currentImage.style.opacity = '0';
                                 
                                 setTimeout(() => {
-                                    currentImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/none.svg";
+                                    currentImage.src = "source/none.svg";
                                     currentImage.style.opacity = '1';
                                 }, 300);
                             } else {
@@ -2639,7 +2639,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     setTimeout(() => {
                                         // Change text and image during blur restoration
                                         wayTitle.innerHTML = "머쓱해하다가 친구를 만나고 집으로 돌아갔다.";
-                                        doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg";
+                                        doorImage.src = "source/door_closed.svg";
                                         
                                         allElements.forEach(element => {
                                             element.style.transition = 'filter 2s ease-in-out, opacity 2s ease-in-out';
@@ -2679,7 +2679,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 const currentContainer = document.getElementById('homeArrivalButtonContainer');
                                                 
                                                 // Change to door_opened image
-                                                await changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg");
+                                                await changeImageWithFade("source/door_opened.svg");
                                                 
                                                 // Connect last circle to first circle
                                                 if (circles.length >= 2) {
@@ -2703,7 +2703,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                         // Wait a moment before showing sunset elements
                                                         setTimeout(() => {
                                                             // Update image source and fade in
-                                                            currentImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                                                            currentImage.src = "source/sunset.svg";
                                                             currentImage.style.opacity = '1';
                                                             
                                                             // Update text and show
@@ -2787,7 +2787,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Apply fade effects
                     await Promise.all([
-                        changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/friend.svg"),
+                        changeImageWithFade("source/friend.svg"),
                         changeTextWithFade(wayTitle, "돌아보지 않은 나는...<br>식은땀을 흘리다가 옆에서 들려온 친구의 목소리에 깨어났다."),
                         currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                     ]);
@@ -2817,7 +2817,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Apply fade effects
                         await Promise.all([
-                            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg"),
+                            changeImageWithFade("source/door_closed.svg"),
                             changeTextWithFade(wayTitle, "친구에게 느꼈던 감각을 이야기하며 집으로 돌아갔다."),
                             currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                         ]);
@@ -2856,7 +2856,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Change door image immediately without fade
                             const doorImage = document.querySelector('.illust-container img');
                             if (doorImage) {
-                                doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+                                doorImage.src = "source/door_opened.svg";
                             }
                             
                             // Hide current choice button
@@ -2880,7 +2880,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 await new Promise(resolve => setTimeout(resolve, fadeDuration));
                                 
                                 // Change image and text
-                                currentImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                                currentImage.src = "source/sunset.svg";
                                 wayTitle.innerHTML = "오늘 하루도 끝났다...";
                                 
                                 // Fade in new content
@@ -2987,7 +2987,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Apply fade effects
                 await Promise.all([
-                    changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/book.svg"),
+                    changeImageWithFade("source/book.svg"),
                     changeTextWithFade(wayTitle, "책을 반납하러 도서관을 갔다.<br>반납하려는데 책에 붙어있는 쪽지를 발견한다."),
                     currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                 ]);
@@ -3023,7 +3023,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     // Apply fade effects
                     await Promise.all([
-                        changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg"),
+                        changeImageWithFade("source/door_closed.svg"),
                         changeTextWithFade(wayTitle, "쪽지를 모른척하고 책을 잘 반납한 후에 집으로 돌아갔다."),
                         currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                     ]);
@@ -3052,7 +3052,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const currentContainer = document.getElementById('homeArrivalButtonContainer');
                         
                         // Change to door_opened image
-                        await changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg");
+                        await changeImageWithFade("source/door_opened.svg");
                         
                         // Connect last circle to first circle
                         if (circles.length >= 2) {
@@ -3076,7 +3076,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 // Wait a moment before showing sunset elements
                                 setTimeout(() => {
                                     // Update image source and fade in
-                                    currentImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                                    currentImage.src = "source/sunset.svg";
                                     currentImage.style.opacity = '1';
                                     
                                     // Update text and show
@@ -3187,7 +3187,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 // Change image to merong.svg and fade it in
                                 if (doorImage) {
                                     setTimeout(() => {
-                                        doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/merong.svg";
+                                        doorImage.src = "source/merong.svg";
                                         doorImage.style.opacity = '1';
                                     }, 300); // Wait for fade out to complete
                                 }
@@ -3221,7 +3221,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         
                                         // Apply fade effects
                                         await Promise.all([
-                                            changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg"),
+                                            changeImageWithFade("source/door_closed.svg"),
                                             changeTextWithFade(wayTitle, "터덜터덜 걸어서 집에 도착했다..."),
                                             currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                                         ]);
@@ -3250,7 +3250,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             const currentContainer = document.getElementById('homeArrivalButtonContainer');
                                             
                                             // Change to door_opened image
-                                            await changeImageWithFade("/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg");
+                                            await changeImageWithFade("source/door_opened.svg");
                                             
                                             // Connect last circle to first circle
                                             if (circles.length >= 2) {
@@ -3277,7 +3277,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 // Wait a moment before showing sunset elements
                                                 setTimeout(() => {
                                                     // Update image source and fade in
-                                                    doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/sunset.svg";
+                                                    doorImage.src = "source/sunset.svg";
                                                     doorImage.style.opacity = '1';
                                                     
                                                     // Update text and show
