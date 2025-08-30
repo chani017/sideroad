@@ -3,10 +3,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const generateDot1 = document.getElementById('generateDot1');
     const dotCanvas = document.getElementById('dotCanvas');
     const doorImage = document.querySelector('.door-closed-svg');
+    const initialButtonContainer = document.getElementById('initialButtonContainer');
+    const choiceButtonContainer = document.getElementById('choiceButtonContainer');
+    const goUsualWay = document.getElementById('goUsualWay');
+    const goNewWay = document.getElementById('goNewWay');
     
     let circles = []; // Array to store all circles
     let gridSections = []; // Array to store available grid sections
     let isDoorOpen = false; // Track door state
+    let hasExitedDoor = false; // Track if user has exited the door
     
     // Grid system variables
     const GRID_COLS = 3;
@@ -23,6 +28,44 @@ document.addEventListener('DOMContentLoaded', function() {
             doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
             isDoorOpen = true;
             console.log('Door opened');
+        }
+    }
+    
+    // Function to transition from door to way image
+    function transitionToWay() {
+        if (!hasExitedDoor) {
+            hasExitedDoor = true;
+            
+            // First change to door_opened.svg
+            doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+            
+            // Wait a moment then start fade out
+            setTimeout(() => {
+                // Fade out door image and button
+                doorImage.style.transition = 'opacity 1s ease-out';
+                doorImage.style.opacity = '0';
+                initialButtonContainer.style.transition = 'opacity 1s ease-out';
+                initialButtonContainer.style.opacity = '0';
+                
+                setTimeout(() => {
+                    // Change to way image
+                    doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/way.svg";
+                    doorImage.style.opacity = '1';
+                    
+                    // Hide initial button, show choice buttons
+                    initialButtonContainer.style.display = 'none';
+                    choiceButtonContainer.style.display = 'flex';
+                    choiceButtonContainer.style.opacity = '0';
+                    
+                    // Fade in choice buttons
+                    setTimeout(() => {
+                        choiceButtonContainer.style.transition = 'opacity 1s ease-in';
+                        choiceButtonContainer.style.opacity = '1';
+                    }, 100);
+                    
+                    console.log('Transitioned to way image and choice buttons');
+                }, 1000);
+            }, 500);
         }
     }
     
@@ -251,8 +294,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Event listener for button
     generateDot1.addEventListener('click', function() {
-        // Toggle door image on every click
-        toggleDoorImage();
+        // If this is the first click, transition to way image
+        if (!hasExitedDoor) {
+            transitionToWay();
+            return;
+        }
         
         // If we have 6 circles, create circular connection instead of new circle
         if (circles.length === 6) {
@@ -266,6 +312,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         generateRandomCircle();
+        // Add button click effect
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            this.style.transform = 'scale(1)';
+        }, 150);
+    });
+    
+    // Event listeners for choice buttons
+    goUsualWay.addEventListener('click', function() {
+        console.log('User chose to go the usual way');
+        // Add button click effect
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            this.style.transform = 'scale(1)';
+        }, 150);
+    });
+    
+    goNewWay.addEventListener('click', function() {
+        console.log('User chose to go the new way');
         // Add button click effect
         this.style.transform = 'scale(0.95)';
         setTimeout(() => {
