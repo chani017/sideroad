@@ -2,14 +2,29 @@
 document.addEventListener('DOMContentLoaded', function() {
     const generateDot1 = document.getElementById('generateDot1');
     const dotCanvas = document.getElementById('dotCanvas');
+    const doorImage = document.querySelector('.door-closed-svg');
     
     let circles = []; // Array to store all circles
     let gridSections = []; // Array to store available grid sections
+    let isDoorOpen = false; // Track door state
     
     // Grid system variables
     const GRID_COLS = 3;
     const GRID_ROWS = 3;
     const TOTAL_SECTIONS = GRID_COLS * GRID_ROWS;
+    
+    // Function to toggle door image
+    function toggleDoorImage() {
+        if (isDoorOpen) {
+            doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_closed.svg";
+            isDoorOpen = false;
+            console.log('Door closed');
+        } else {
+            doorImage.src = "/Users/dachan/Desktop/designcamp/mjc/source/door_opened.svg";
+            isDoorOpen = true;
+            console.log('Door opened');
+        }
+    }
     
     // Function to initialize grid sections
     function initializeGridSections() {
@@ -138,49 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
             drawConnectingLine(circles[circles.length - 2], circle);
         }
         
-        // Create circular connection when 6th circle is created
-        if (circles.length === 6) {
-            const firstCircle = circles[0];
-            const lastCircle = circles[5]; // 6th circle
-            
-            // Get positions of first and last circles
-            const firstRect = firstCircle.getBoundingClientRect();
-            const lastRect = lastCircle.getBoundingClientRect();
-            
-            // Calculate centers
-            const circleSize = 13.33;
-            const firstCenterX = firstRect.left + circleSize / 2;
-            const firstCenterY = firstRect.top + circleSize / 2;
-            const lastCenterX = lastRect.left + circleSize / 2;
-            const lastCenterY = lastRect.top + circleSize / 2;
-            
-            // Calculate distance and angle FROM last circle TO first circle
-            const distance = Math.sqrt(Math.pow(firstCenterX - lastCenterX, 2) + Math.pow(firstCenterY - lastCenterY, 2));
-            const angle = Math.atan2(firstCenterY - lastCenterY, firstCenterX - lastCenterX) * 180 / Math.PI;
-            
-            // Create circular line element
-            const circularLine = document.createElement('div');
-            circularLine.className = 'connecting-line circular-line';
-            circularLine.style.zIndex = '1';
-            
-            // Set line properties for precise connection
-            circularLine.style.setProperty('--line-width', distance + 'px');
-            
-            // Position the line at the last circle center (start point)
-            circularLine.style.left = lastCenterX + 'px';
-            circularLine.style.top = lastCenterY + 'px';
-            circularLine.style.transform = `rotate(${angle}deg)`;
-            
-            // Add circular line to canvas
-            dotCanvas.appendChild(circularLine);
-            
-            // Trigger animation by adding animation class
-            setTimeout(() => {
-                circularLine.classList.add('animate-line');
-            }, 10);
-            
-            console.log('Circular connection created from 6th circle to 1st circle');
-        }
+        // Remove automatic circular connection when 6th circle is created
+        // Now user needs to click button again to create circular connection
         
         return circle;
     }
@@ -226,8 +200,71 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Connecting line added between circles with animation');
     }
     
+    // Function to create circular connection from last circle to first circle
+    function createCircularConnection() {
+        if (circles.length < 6) {
+            console.log('Need 6 circles to create circular connection');
+            return;
+        }
+        
+        const firstCircle = circles[0];
+        const lastCircle = circles[5]; // 6th circle
+        
+        // Get positions of first and last circles
+        const firstRect = firstCircle.getBoundingClientRect();
+        const lastRect = lastCircle.getBoundingClientRect();
+        
+        // Calculate centers
+        const circleSize = 13.33;
+        const firstCenterX = firstRect.left + circleSize / 2;
+        const firstCenterY = firstRect.top + circleSize / 2;
+        const lastCenterX = lastRect.left + circleSize / 2;
+        const lastCenterY = lastRect.top + circleSize / 2;
+        
+        // Calculate distance and angle FROM last circle TO first circle
+        const distance = Math.sqrt(Math.pow(firstCenterX - lastCenterX, 2) + Math.pow(firstCenterY - lastCenterY, 2));
+        const angle = Math.atan2(firstCenterY - lastCenterY, firstCenterX - lastCenterX) * 180 / Math.PI;
+        
+        // Create circular line element
+        const circularLine = document.createElement('div');
+        circularLine.className = 'connecting-line circular-line';
+        circularLine.style.zIndex = '1';
+        
+        // Set line properties for precise connection
+        circularLine.style.setProperty('--line-width', distance + 'px');
+        
+        // Position the line at the last circle center (start point)
+        circularLine.style.left = lastCenterX + 'px';
+        circularLine.style.top = lastCenterY + 'px';
+        circularLine.style.transform = `rotate(${angle}deg)`;
+        
+        // Add circular line to canvas
+        dotCanvas.appendChild(circularLine);
+        
+        // Trigger animation by adding animation class
+        setTimeout(() => {
+            circularLine.classList.add('animate-line');
+        }, 10);
+        
+        console.log('Circular connection created from 6th circle to 1st circle');
+    }
+    
     // Event listener for button
     generateDot1.addEventListener('click', function() {
+        // Toggle door image on every click
+        toggleDoorImage();
+        
+        // If we have 6 circles, create circular connection instead of new circle
+        if (circles.length === 6) {
+            createCircularConnection();
+            // Add button click effect
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+            return;
+        }
+        
         generateRandomCircle();
         // Add button click effect
         this.style.transform = 'scale(0.95)';
