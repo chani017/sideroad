@@ -1,8 +1,6 @@
 @font-face {
     font-family: 'BookkGothic';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/BookkGothic-Lt.woff2') format('woff2');
-    font-weight: 300;
-    font-display: swap;
+    src: url('/mjc/font/BookkGothic_Bold.ttf') format('truetype');
 }
 
 /* Reset and base styles */
