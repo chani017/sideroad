@@ -1,28 +1,28 @@
 // Double Click Prevention Utility
-let isProcessing = false;
-
 function preventDoubleClick(button, callback, duration = 1000) {
+    let isButtonProcessing = false;
+    
     return async function() {
         // 이미 처리 중이면 무시
-        if (isProcessing || button.disabled || button.classList.contains('processing')) {
+        if (isButtonProcessing || button.disabled || button.classList.contains('processing')) {
             console.log('Double click prevented');
             return;
         }
         
         // 처리 시작
-        isProcessing = true;
+        isButtonProcessing = true;
         button.disabled = true;
         button.classList.add('processing');
         
         try {
-            // 콜백 함수 실행
-            await callback.call(this);
+            // 콜백 함수 실행 - this를 button으로 설정
+            await callback.call(button);
         } catch (error) {
             console.error('Button callback error:', error);
         } finally {
             // 지정된 시간 후 다시 활성화
             setTimeout(() => {
-                isProcessing = false;
+                isButtonProcessing = false;
                 button.disabled = false;
                 button.classList.remove('processing');
             }, duration);
@@ -651,7 +651,7 @@ document.addEventListener('DOMContentLoaded', function() {
         newWay2Button.textContent = '정돈되고 사람 많은 곳으로 가자';
         
         // Add click events for new buttons
-        newWay1Button.addEventListener('click', async function() {
+        createSafeButton(newWay1Button, async function() {
             console.log('User chose the unpaved road with stones and grass');
             
             const wayTitle = document.getElementById('wayTitle');
@@ -693,7 +693,7 @@ document.addEventListener('DOMContentLoaded', function() {
             askDirectionsButton.textContent = '가는 사람을 붙잡고 길을 물어본다';
             
             // Add click events for lost choice buttons
-            useMapButton.addEventListener('click', async function() {
+            createSafeButton(useMapButton, async function() {
                 console.log('User chose to use map app');
                 
                 const wayTitle = document.getElementById('wayTitle');
@@ -705,12 +705,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.style.transform = 'scale(1)';
                 }, 150);
                 
-                // Apply fade effects with consistent timing
-                await Promise.all([
-                    changeImageWithFade("source/warning.svg", fadeDuration),
-                    changeTextWithFade(wayTitle, "앗! 지도 앱이 이상한 곳을 알려줘서 결국 집에 늦게 도착했다.", fadeDuration),
-                    currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
-                ]);
+                // Apply smooth synchronized transition
+                await smoothTransition(
+                    { src: "source/warning.svg" },
+                    { element: wayTitle, text: "앗! 지도 앱이 이상한 곳을 알려줘서 집에 늦게 도착했다." },
+                    currentContainer ? [{ element: currentContainer, show: false }] : []
+                );
                 
                 // Create new choice button container for tired option
                 const tiredChoiceContainer = document.createElement('div');
@@ -722,15 +722,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 tiredChoiceContainer.style.alignItems = 'center';
                 tiredChoiceContainer.style.marginTop = '20px';
                 
-                // Create tired button
-                const tiredButton = document.createElement('button');
-                tiredButton.id = 'tired';
-                tiredButton.className = 'dot-btn';
-                tiredButton.textContent = '피곤하다...';
+                // Create reaction button
+                const reactionButton = document.createElement('button');
+                reactionButton.id = 'reaction';
+                reactionButton.className = 'dot-btn';
+                reactionButton.textContent = '이런...';
                 
-                // Add click event for tired button - START ENDING SEQUENCE
-                tiredButton.addEventListener('click', async function() {
-                    console.log('User chose tired option - Starting ending sequence');
+                // Add click event for reaction button - START ENDING SEQUENCE
+                createSafeButton(reactionButton, async function() {
+                    console.log('User chose reaction option - Starting ending sequence');
                     
                     const wayTitle = document.getElementById('wayTitle');
                     const currentContainer = document.getElementById('tiredChoiceButtonContainer');
@@ -741,12 +741,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         this.style.transform = 'scale(1)';
                     }, 150);
                     
-                    // Apply fade effects with consistent timing
-                    await Promise.all([
-                        changeImageWithFade("source/door_closed.svg", fadeDuration),
-                        changeTextWithFade(wayTitle, "힘겹게 방 문 앞에 섰다.", fadeDuration),
-                        currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
-                    ]);
+                    // Apply smooth synchronized transition
+                    await smoothTransition(
+                        { src: "source/door_closed.svg" },
+                        { element: wayTitle, text: "허탈한 몸을 이끌고 방 문 앞으로 간다" },
+                        currentContainer ? [{ element: currentContainer, show: false }] : []
+                    );
                     
                     // Create new choice button container for door entry
                     const doorEntryChoiceContainer = document.createElement('div');
@@ -762,10 +762,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const enterDoorButton = document.createElement('button');
                     enterDoorButton.id = 'enterDoorTired';
                     enterDoorButton.className = 'dot-btn';
-                    enterDoorButton.textContent = '문을 열고 들어간다';
+                    enterDoorButton.textContent = '문을 열고 들어간다.';
                     
                     // Add click event for door entry button - ENDING SEQUENCE
-                    enterDoorButton.addEventListener('click', async function() {
+                    createSafeButton(enterDoorButton, async function() {
                         console.log('User chose to enter through the door - Starting ending sequence from tired path');
                         
                         const wayTitle = document.getElementById('wayTitle');
@@ -777,27 +777,32 @@ document.addEventListener('DOMContentLoaded', function() {
                             this.style.transform = 'scale(1)';
                         }, 150);
                         
-                        // Step 1: Change to door_opened.svg and fade out
-                        await Promise.all([
-                            changeImageWithFade("source/door_opened.svg", fadeDuration),
-                            currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
-                        ]);
-                        
-                        // Wait for transition to complete
-                        await new Promise(resolve => setTimeout(resolve, fadeDuration));
-                        
-                        // Step 2: Change to sunset.svg and ending message
+                        // Step 1: Change to door_opened.svg and immediately start fade out
                         const currentImage = document.querySelector('.illust-container img');
                         if (currentImage) {
-                            // Fade out current image and text
+                            currentImage.src = "source/door_opened.svg"; // Instant change, no fade
+                        }
+                        
+                        // Fade out buttons and immediately start image/text fade out
+                        const fadePromises = [];
+                        if (currentContainer) {
+                            fadePromises.push(fadeElement(currentContainer, false, fadeDuration));
+                        }
+                        
+                        // Immediately start fading out image and text
+                        if (currentImage) {
                             currentImage.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                             currentImage.style.opacity = '0';
                             wayTitle.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                             wayTitle.style.opacity = '0';
-                            
-                            // Wait for fade out to complete (reduced time)
-                            await new Promise(resolve => setTimeout(resolve, fadeDuration/2));
-                            
+                        }
+                        
+                        // Wait for fade out to complete
+                        await Promise.all(fadePromises);
+                        await new Promise(resolve => setTimeout(resolve, fadeDuration));
+                        
+                        // Step 2: Change to sunset.svg and ending message
+                        if (currentImage) {
                             // Change image and text
                             currentImage.src = "source/sunset.svg";
                             wayTitle.innerHTML = "오늘 하루도 끝났다...";
@@ -823,7 +828,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         restartButton.textContent = '처음으로 돌아가기';
                         
                         // Add click event for restart button
-                        restartButton.addEventListener('click', function() {
+                        createSafeButton(restartButton, function() {
                             console.log('User chose to restart from tired path - Reloading page');
                             // Page reload
                             location.reload();
@@ -833,7 +838,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         restartChoiceContainer.appendChild(restartButton);
                         
                         // Add restart container to choice section
-                        const choiceSection = document.querySelector('.choice-section');
+                        const choiceSection = document.getElementById('choiceSection');
                         choiceSection.appendChild(restartChoiceContainer);
                         
                         // Fade in restart button
@@ -844,7 +849,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     doorEntryChoiceContainer.appendChild(enterDoorButton);
                     
                     // Add door entry container to choice section
-                    const choiceSection = document.querySelector('.choice-section');
+                    const choiceSection = document.getElementById('choiceSection');
                     choiceSection.appendChild(doorEntryChoiceContainer);
                     
                     // Fade in door entry button
@@ -854,11 +859,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     generateRandomCircle();
                 });
                 
-                // Add tired button to container
-                tiredChoiceContainer.appendChild(tiredButton);
+                // Add reaction button to container
+                tiredChoiceContainer.appendChild(reactionButton);
                 
                 // Add tired choice container to choice section
-                const choiceSection = document.querySelector('.choice-section');
+                const choiceSection = document.getElementById('choiceSection');
                 choiceSection.appendChild(tiredChoiceContainer);
                 
                 // Fade in tired button
@@ -868,7 +873,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 generateRandomCircle();
             });
             
-            askDirectionsButton.addEventListener('click', async function() {
+            createSafeButton(askDirectionsButton, async function() {
                 console.log('User chose to ask for directions - Starting ending sequence');
                 
                 const wayTitle = document.getElementById('wayTitle');
@@ -880,12 +885,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.style.transform = 'scale(1)';
                 }, 150);
                 
-                // Apply fade effects with consistent timing
-                await Promise.all([
-                    changeImageWithFade("source/door_closed.svg", fadeDuration),
-                    changeTextWithFade(wayTitle, "길을 아는 사람이 아무도 없어 <br>결국 밤이 되어 빙빙 돌아 집으로 돌아갔다.", fadeDuration),
-                    currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
-                ]);
+                // Apply smooth synchronized transition
+                await smoothTransition(
+                    { src: "source/door_closed.svg" },
+                    { element: wayTitle, text: "길을 아는 사람이 아무도 없어 결국 밤이 되어 빙빙 돌아 집으로 돌아갔다." },
+                    currentContainer ? [{ element: currentContainer, show: false }] : []
+                );
                 
                 // Create new choice button container for door entry
                 const doorEntryChoiceContainer = document.createElement('div');
@@ -901,10 +906,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const enterDoorButton = document.createElement('button');
                 enterDoorButton.id = 'enterDoorAskDirections';
                 enterDoorButton.className = 'dot-btn';
-                enterDoorButton.textContent = '문을 열고 들어간다';
+                enterDoorButton.textContent = '문을 열고 들어간다.';
                 
                 // Add click event for door entry button - ENDING SEQUENCE
-                enterDoorButton.addEventListener('click', async function() {
+                createSafeButton(enterDoorButton, async function() {
                     console.log('User chose to enter through the door - Starting ending sequence from ask directions path');
                     
                     const wayTitle = document.getElementById('wayTitle');
@@ -916,33 +921,32 @@ document.addEventListener('DOMContentLoaded', function() {
                         this.style.transform = 'scale(1)';
                     }, 150);
                     
-                    // Step 1: Change to door_opened.svg (no fade) and fade out buttons
-                    // Change door image immediately without fade
-                    const doorImage = document.querySelector('.illust-container img');
-                    if (doorImage) {
-                        doorImage.src = "source/door_opened.svg";
-                    }
-                    
-                    // Hide current choice button
-                    if (currentContainer) {
-                        await fadeElement(currentContainer, false, fadeDuration);
-                    }
-                    
-                    // Wait for transition to complete
-                    await new Promise(resolve => setTimeout(resolve, fadeDuration));
-                    
-                    // Step 2: Change to sunset.svg and ending message
+                    // Step 1: Change to door_opened.svg and immediately start fade out
                     const currentImage = document.querySelector('.illust-container img');
                     if (currentImage) {
-                        // Fade out current image and text
+                        currentImage.src = "source/door_opened.svg"; // Instant change, no fade
+                    }
+                    
+                    // Fade out buttons and immediately start image/text fade out
+                    const fadePromises = [];
+                    if (currentContainer) {
+                        fadePromises.push(fadeElement(currentContainer, false, fadeDuration));
+                    }
+                    
+                    // Immediately start fading out image and text
+                    if (currentImage) {
                         currentImage.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                         currentImage.style.opacity = '0';
                         wayTitle.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                         wayTitle.style.opacity = '0';
-                        
-                        // Wait for fade out to complete
-                        await new Promise(resolve => setTimeout(resolve, fadeDuration));
-                        
+                    }
+                    
+                    // Wait for fade out to complete
+                    await Promise.all(fadePromises);
+                    await new Promise(resolve => setTimeout(resolve, fadeDuration));
+                    
+                    // Step 2: Change to sunset.svg and ending message
+                    if (currentImage) {
                         // Change image and text
                         currentImage.src = "source/sunset.svg";
                         wayTitle.innerHTML = "오늘 하루도 끝났다...";
@@ -978,7 +982,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     restartChoiceContainer.appendChild(restartButton);
                     
                     // Add restart container to choice section
-                    const choiceSection = document.querySelector('.choice-section');
+                    const choiceSection = document.getElementById('choiceSection');
                     choiceSection.appendChild(restartChoiceContainer);
                     
                     // Fade in restart button
@@ -989,7 +993,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 doorEntryChoiceContainer.appendChild(enterDoorButton);
                 
                 // Add door entry container to choice section
-                const choiceSection = document.querySelector('.choice-section');
+                const choiceSection = document.getElementById('choiceSection');
                 choiceSection.appendChild(doorEntryChoiceContainer);
                 
                 // Fade in door entry button
@@ -1004,7 +1008,7 @@ document.addEventListener('DOMContentLoaded', function() {
             lostChoiceContainer.appendChild(askDirectionsButton);
             
             // Add lost choice container to choice section
-            const choiceSection = document.querySelector('.choice-section');
+            const choiceSection = document.getElementById('choiceSection');
             choiceSection.appendChild(lostChoiceContainer);
             
             // Fade in new buttons
@@ -1019,6 +1023,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const wayTitle = document.getElementById('wayTitle');
             const currentContainer = document.getElementById('newChoiceButtonContainer');
+            
+            // Add button click effect
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
             
             // Apply smooth synchronized transition
             await smoothTransition(
@@ -1050,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', function() {
             talkToPersonButton.textContent = '말을 걸어본다';
             
             // Add click events for lost person buttons
-            ignorePersonButton.addEventListener('click', async function() {
+            createSafeButton(ignorePersonButton, async function() {
                 console.log('User chose to ignore the lost person');
                 
                 const wayTitle = document.getElementById('wayTitle');
@@ -1092,7 +1102,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 askDirectionsButton.textContent = '가는 사람을 붙잡고 길을 물어본다';
                 
                 // Add click events for lost choice buttons
-                useMapButton.addEventListener('click', async function() {
+                createSafeButton(useMapButton, async function() {
                     console.log('User chose to use map app after ignoring person');
                     
                     const wayTitle = document.getElementById('wayTitle');
@@ -1104,12 +1114,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         this.style.transform = 'scale(1)';
                     }, 150);
                     
-                    // Apply fade effects with consistent timing
-                    await Promise.all([
-                        changeImageWithFade("source/warning.svg", fadeDuration),
-                        changeTextWithFade(wayTitle, "앗! 지도 앱이 이상한 곳을 알려줘서 결국 집에 늦게 도착했다.", fadeDuration),
-                        currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
-                    ]);
+                    // Apply smooth synchronized transition
+                    await smoothTransition(
+                        { src: "source/warning.svg" },
+                        { element: wayTitle, text: "앗! 지도 앱이 이상한 곳을 알려줘서 집에 늦게 도착했다." },
+                        currentContainer ? [{ element: currentContainer, show: false }] : []
+                    );
                     
                     // Create new choice button container for tired option
                     const tiredChoiceContainer = document.createElement('div');
@@ -1121,15 +1131,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     tiredChoiceContainer.style.alignItems = 'center';
                     tiredChoiceContainer.style.marginTop = '20px';
                     
-                    // Create tired button
-                    const tiredButton = document.createElement('button');
-                    tiredButton.id = 'tiredIgnore';
-                    tiredButton.className = 'dot-btn';
-                    tiredButton.textContent = '피곤하다...';
+                    // Create reaction button
+                    const reactionButton = document.createElement('button');
+                    reactionButton.id = 'reactionIgnore';
+                    reactionButton.className = 'dot-btn';
+                    reactionButton.textContent = '이런...';
                     
-                    // Add click event for tired button - START ENDING SEQUENCE
-                    tiredButton.addEventListener('click', async function() {
-                        console.log('User chose tired option after ignoring person - Starting ending sequence');
+                    // Add click event for reaction button - START ENDING SEQUENCE
+                    createSafeButton(reactionButton, async function() {
+                        console.log('User chose reaction option after ignoring person - Starting ending sequence');
                         
                         const wayTitle = document.getElementById('wayTitle');
                         const currentContainer = document.getElementById('ignoreTiredChoiceButtonContainer');
@@ -1140,12 +1150,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             this.style.transform = 'scale(1)';
                         }, 150);
                         
-                        // Apply fade effects with consistent timing
-                        await Promise.all([
-                            changeImageWithFade("source/door_closed.svg", fadeDuration),
-                            changeTextWithFade(wayTitle, "힘겹게 방 문 앞에 섰다.", fadeDuration),
-                            currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
-                        ]);
+                        // Apply smooth synchronized transition
+                        await smoothTransition(
+                            { src: "source/door_closed.svg" },
+                            { element: wayTitle, text: "허탈한 몸을 이끌고 방 문 앞으로 간다" },
+                            currentContainer ? [{ element: currentContainer, show: false }] : []
+                        );
                         
                         // Create new choice button container for door entry
                         const doorEntryChoiceContainer = document.createElement('div');
@@ -1161,10 +1171,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         const enterDoorButton = document.createElement('button');
                         enterDoorButton.id = 'enterDoorIgnoreTired';
                         enterDoorButton.className = 'dot-btn';
-                        enterDoorButton.textContent = '문을 열고 들어간다';
+                        enterDoorButton.textContent = '문을 열고 들어간다.';
                         
                         // Add click event for door entry button - ENDING SEQUENCE
-                        enterDoorButton.addEventListener('click', async function() {
+                        createSafeButton(enterDoorButton, async function() {
                             console.log('User chose to enter through the door - Starting ending sequence from ignore tired path');
                             
                             const wayTitle = document.getElementById('wayTitle');
@@ -1176,33 +1186,32 @@ document.addEventListener('DOMContentLoaded', function() {
                                 this.style.transform = 'scale(1)';
                             }, 150);
                             
-                            // Step 1: Change to door_opened.svg (no fade) and fade out buttons
-                            // Change door image immediately without fade
-                            const doorImage = document.querySelector('.illust-container img');
-                            if (doorImage) {
-                                doorImage.src = "source/door_opened.svg";
-                            }
-                            
-                            // Hide current choice button
-                            if (currentContainer) {
-                                await fadeElement(currentContainer, false, fadeDuration);
-                            }
-                            
-                            // Wait for transition to complete
-                            await new Promise(resolve => setTimeout(resolve, fadeDuration));
-                            
-                            // Step 2: Change to sunset.svg and ending message
+                            // Step 1: Change to door_opened.svg and immediately start fade out
                             const currentImage = document.querySelector('.illust-container img');
                             if (currentImage) {
-                                // Fade out current image and text
+                                currentImage.src = "source/door_opened.svg"; // Instant change, no fade
+                            }
+                            
+                            // Fade out buttons and immediately start image/text fade out
+                            const fadePromises = [];
+                            if (currentContainer) {
+                                fadePromises.push(fadeElement(currentContainer, false, fadeDuration));
+                            }
+                            
+                            // Immediately start fading out image and text
+                            if (currentImage) {
                                 currentImage.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                                 currentImage.style.opacity = '0';
                                 wayTitle.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                                 wayTitle.style.opacity = '0';
-                                
-                                // Wait for fade out to complete
-                                await new Promise(resolve => setTimeout(resolve, fadeDuration));
-                                
+                            }
+                            
+                            // Wait for fade out to complete
+                            await Promise.all(fadePromises);
+                            await new Promise(resolve => setTimeout(resolve, fadeDuration));
+                            
+                            // Step 2: Change to sunset.svg and ending message
+                            if (currentImage) {
                                 // Change image and text
                                 currentImage.src = "source/sunset.svg";
                                 wayTitle.innerHTML = "오늘 하루도 끝났다...";
@@ -1228,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             restartButton.textContent = '처음으로 돌아가기';
                             
                             // Add click event for restart button
-                            restartButton.addEventListener('click', function() {
+                            createSafeButton(restartButton, function() {
                                 console.log('User chose to restart from ignore tired path - Reloading page');
                                 // Page reload
                                 location.reload();
@@ -1259,8 +1268,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         generateRandomCircle();
                     });
                     
-                    // Add tired button to container
-                    tiredChoiceContainer.appendChild(tiredButton);
+                    // Add reaction button to container
+                    tiredChoiceContainer.appendChild(reactionButton);
                     
                     // Add tired choice container to choice section
                     const choiceSection = document.getElementById('choiceSection');
@@ -1285,12 +1294,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         this.style.transform = 'scale(1)';
                     }, 150);
                     
-                    // Apply fade effects with consistent timing
-                    await Promise.all([
-                        changeImageWithFade("source/door_closed.svg", fadeDuration),
-                        changeTextWithFade(wayTitle, "길을 아는 사람이 아무도 없어 결국 밤이 되어 빙빙 돌아 집으로 돌아갔다.", fadeDuration),
-                        currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
-                    ]);
+                    // Apply smooth synchronized transition
+                    await smoothTransition(
+                        { src: "source/door_closed.svg" },
+                        { element: wayTitle, text: "길을 아는 사람이 아무도 없어 결국 밤이 되어 빙빙 돌아 집으로 돌아갔다." },
+                        currentContainer ? [{ element: currentContainer, show: false }] : []
+                    );
                     
                     // Create new choice button container for door entry
                     const doorEntryChoiceContainer = document.createElement('div');
@@ -1306,10 +1315,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const enterDoorButton = document.createElement('button');
                     enterDoorButton.id = 'enterDoorIgnoreAskDirections';
                     enterDoorButton.className = 'dot-btn';
-                    enterDoorButton.textContent = '문을 열고 들어간다';
+                    enterDoorButton.textContent = '문을 열고 들어간다.';
                     
                     // Add click event for door entry button - ENDING SEQUENCE
-                    enterDoorButton.addEventListener('click', async function() {
+                    createSafeButton(enterDoorButton, async function() {
                         console.log('User chose to enter through the door - Starting ending sequence from ignore ask directions path');
                         
                         const wayTitle = document.getElementById('wayTitle');
@@ -1321,33 +1330,32 @@ document.addEventListener('DOMContentLoaded', function() {
                             this.style.transform = 'scale(1)';
                         }, 150);
                         
-                        // Step 1: Change to door_opened.svg (no fade) and fade out buttons
-                        // Change door image immediately without fade
-                        const doorImage = document.querySelector('.illust-container img');
-                        if (doorImage) {
-                            doorImage.src = "source/door_opened.svg";
-                        }
-                        
-                        // Hide current choice button
-                        if (currentContainer) {
-                            await fadeElement(currentContainer, false, fadeDuration);
-                        }
-                        
-                        // Wait for transition to complete
-                        await new Promise(resolve => setTimeout(resolve, fadeDuration));
-                        
-                        // Step 2: Change to sunset.svg and ending message
+                        // Step 1: Change to door_opened.svg and immediately start fade out
                         const currentImage = document.querySelector('.illust-container img');
                         if (currentImage) {
-                            // Fade out current image and text
+                            currentImage.src = "source/door_opened.svg"; // Instant change, no fade
+                        }
+                        
+                        // Fade out buttons and immediately start image/text fade out
+                        const fadePromises = [];
+                        if (currentContainer) {
+                            fadePromises.push(fadeElement(currentContainer, false, fadeDuration));
+                        }
+                        
+                        // Immediately start fading out image and text
+                        if (currentImage) {
                             currentImage.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                             currentImage.style.opacity = '0';
                             wayTitle.style.transition = `opacity ${fadeDuration}ms ease-in-out`;
                             wayTitle.style.opacity = '0';
-                            
-                            // Wait for fade out to complete (reduced time)
-                            await new Promise(resolve => setTimeout(resolve, fadeDuration/2));
-                            
+                        }
+                        
+                        // Wait for fade out to complete
+                        await Promise.all(fadePromises);
+                        await new Promise(resolve => setTimeout(resolve, fadeDuration));
+                        
+                        // Step 2: Change to sunset.svg and ending message
+                        if (currentImage) {
                             // Change image and text
                             currentImage.src = "source/sunset.svg";
                             wayTitle.innerHTML = "오늘 하루도 끝났다...";
@@ -1419,7 +1427,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 generateRandomCircle();
             });
             
-            talkToPersonButton.addEventListener('click', async function() {
+            createSafeButton(talkToPersonButton, async function() {
                 console.log('User chose to talk to the lost person');
                 
                 const wayTitle = document.getElementById('wayTitle');
@@ -1490,7 +1498,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const enterDoorButton = document.createElement('button');
                     enterDoorButton.id = 'enterDoor';
                     enterDoorButton.className = 'dot-btn';
-                    enterDoorButton.textContent = '문을 열고 들어간다';
+                    enterDoorButton.textContent = '문을 열고 들어간다.';
                     
                     // Add click event for door entry button - ENDING SEQUENCE
                     enterDoorButton.addEventListener('click', async function() {
@@ -1616,12 +1624,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Generate circle and connecting line
             generateRandomCircle();
-            
-            // Add button click effect
-            this.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                this.style.transform = 'scale(1)';
-            }, 150);
         }, 800); // 800ms cooldown for longer async operations
         
         // Add buttons to new container
@@ -1629,7 +1631,7 @@ document.addEventListener('DOMContentLoaded', function() {
         newChoiceContainer.appendChild(newWay2Button);
         
         // Add new choice container to choice section
-        const choiceSection = document.querySelector('.choice-section');
+        const choiceSection = document.getElementById('choiceSection');
         choiceSection.appendChild(newChoiceContainer);
         
         // Fade in new buttons
@@ -1905,7 +1907,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             endingChoiceContainer.appendChild(restartButton);
                                             
                                             // Add container to choice section
-                                            const choiceSection = document.querySelector('.choice-section');
+                                            const choiceSection = document.getElementById('choiceSection');
                                             choiceSection.appendChild(endingChoiceContainer);
                                             
                                             // Fade in ending elements
@@ -1930,7 +1932,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             homeChoiceContainer.appendChild(enterHomeButton);
                             
                             // Add container to choice section
-                            const choiceSection = document.querySelector('.choice-section');
+                            const choiceSection = document.getElementById('choiceSection');
                             choiceSection.appendChild(homeChoiceContainer);
                             
                             // Start fading back to normal (fade out the black overlay)
@@ -2166,7 +2168,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 escapeChoiceContainer.appendChild(runAwayButton);
                 
                 // Add escape choice container to choice section
-                const choiceSection = document.querySelector('.choice-section');
+                const choiceSection = document.getElementById('choiceSection');
                 choiceSection.appendChild(escapeChoiceContainer);
                 
                 // Generate circle and connecting line
@@ -2365,7 +2367,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         endingChoiceContainer.appendChild(restartButton);
                                         
                                         // Add container to choice section
-                                        const choiceSection = document.querySelector('.choice-section');
+                                        const choiceSection = document.getElementById('choiceSection');
                                         choiceSection.appendChild(endingChoiceContainer);
                                         
                                         // Fade in ending elements
@@ -2390,7 +2392,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         homeChoiceContainer.appendChild(enterHomeButton);
                         
                         // Add container to choice section
-                        const choiceSection = document.querySelector('.choice-section');
+                        const choiceSection = document.getElementById('choiceSection');
                         choiceSection.appendChild(homeChoiceContainer);
                         
                         // Generate circle and connecting line
@@ -2407,7 +2409,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     happyChoiceContainer.appendChild(goHomeHappyButton);
                     
                     // Add happy choice container to choice section
-                    const choiceSection = document.querySelector('.choice-section');
+                    const choiceSection = document.getElementById('choiceSection');
                     choiceSection.appendChild(happyChoiceContainer);
                     
                     // Generate circle and connecting line
@@ -2605,7 +2607,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 plantChoiceContainer.appendChild(notWaterPlantButton);
                 
                 // Add plant choice container to choice section
-                const choiceSection = document.querySelector('.choice-section');
+                const choiceSection = document.getElementById('choiceSection');
                 choiceSection.appendChild(plantChoiceContainer);
                 
                 // Generate circle and connecting line
@@ -2623,7 +2625,7 @@ document.addEventListener('DOMContentLoaded', function() {
             apologyChoiceContainer.appendChild(leaveQuietlyButton);
             
             // Add apology choice container to choice section
-            const choiceSection = document.querySelector('.choice-section');
+            const choiceSection = document.getElementById('choiceSection');
             choiceSection.appendChild(apologyChoiceContainer);
             
             // Generate circle and connecting line
