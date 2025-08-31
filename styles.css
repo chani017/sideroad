@@ -423,17 +423,6 @@ main {
     pointer-events: auto; /* 기본값 */
 }
 
-.dot-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    pointer-events: none;
-}
-
-.dot-btn.processing {
-    pointer-events: none;
-    opacity: 0.7;
-}
-
 .dot-btn:hover {
     background-color: #000000;
     transform: translateY(-2px);
@@ -498,6 +487,7 @@ main {
     border-radius: 50%;
     pointer-events: none;
     z-index: 1;
+    opacity: 0 !important; /* Force invisible */
 }
 
 /* Background circle styles - exactly same as main circles */
@@ -510,6 +500,7 @@ main {
     border-radius: 50%;
     pointer-events: none;
     z-index: 0;
+    opacity: 0 !important; /* Force invisible */
     transition: opacity 0.5s ease-in-out;
 }
 

@@ -312,6 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
         circle.style.width = circleSize + 'px';
         circle.style.height = circleSize + 'px';
         circle.style.zIndex = '1';
+        circle.style.opacity = '0'; // Ensure circles are invisible
         
         // Add to document body (not just map section)
         document.body.appendChild(circle);
@@ -358,8 +359,8 @@ document.addEventListener('DOMContentLoaded', function() {
         line.setAttribute('x2', toX);
         line.setAttribute('y2', toY);
         line.setAttribute('stroke', '#000000');
-        line.setAttribute('stroke-width', '3'); // 8px line width
-        line.setAttribute('stroke-linecap', 'round');
+        line.setAttribute('stroke-width', '15'); // 8px line width
+        line.setAttribute('stroke-linecap', 'butt');
         
         // Calculate line length for dash animation
         const lineLength = Math.sqrt(Math.pow(toX - fromX, 2) + Math.pow(toY - fromY, 2));
@@ -425,10 +426,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add to document body
             document.body.appendChild(bgCircle);
             
-            // Fade in with random delay for staggered effect
-            setTimeout(() => {
-                bgCircle.style.opacity = '1';
-            }, Math.random() * 1000 + 200);
+            // Keep background circles invisible
+            // setTimeout(() => {
+            //     bgCircle.style.opacity = '1';
+            // }, Math.random() * 1000 + 200);
         }
         
         console.log(`Generated ${circleCount} background circles (line count: ${lineCount})`);
