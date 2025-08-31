@@ -336,8 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     goUsualWay.addEventListener('click', goUsualWayHandler);
                     goNewWay.addEventListener('click', goNewWayHandler);
                     
-                    // Add buttons to container
-                    choiceButtonContainer.appendChild(goUsualWay);
+                    // Add button to container (goUsualWay disabled)
                     choiceButtonContainer.appendChild(goNewWay);
                     
                     // Add container to choice section
@@ -674,7 +673,7 @@ document.addEventListener('DOMContentLoaded', function() {
         newWay2Button.textContent = '정돈되고 사람 많은 곳으로 가자';
         
         // Add click events for new buttons
-        createSafeButton(newWay1Button, async function() {
+        createSafeButton(newWay2Button, async function() {
             console.log('User chose the unpaved road with stones and grass');
             
             const wayTitle = document.getElementById('wayTitle');
@@ -1648,8 +1647,7 @@ document.addEventListener('DOMContentLoaded', function() {
             generateRandomCircle();
         }, 800); // 800ms cooldown for longer async operations
         
-        // Add buttons to new container
-        newChoiceContainer.appendChild(newWay1Button);
+        // Add button to new container
         newChoiceContainer.appendChild(newWay2Button);
         
         // Add new choice container to choice section
