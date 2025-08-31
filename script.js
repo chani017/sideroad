@@ -85,22 +85,41 @@ document.addEventListener('DOMContentLoaded', function() {
     const GRID_ROWS = 3;
     const TOTAL_SECTIONS = GRID_COLS * GRID_ROWS;
     
-    // Helper function to change image with fade effect - optimized for speed
-    function changeImageWithFade(newImageSrc, duration = 200) {
+    // Helper function to change image with smart fade effect
+    function changeImageWithFade(newImageSrc, duration = 300, targetElement = null) {
         return new Promise((resolve) => {
-            doorImage.style.transition = `opacity ${duration}ms ease-in-out`;
-            doorImage.style.opacity = '0';
+            const imageElement = targetElement || document.querySelector('.illust-container img');
+            if (!imageElement) {
+                console.error('No image element found for fade transition');
+                resolve();
+                return;
+            }
             
-            setTimeout(() => {
-                doorImage.src = newImageSrc;
-                doorImage.style.opacity = '1';
-                setTimeout(resolve, duration/2); // Reduce second delay by half
-            }, duration/2); // Reduce first delay by half
+            const currentSrc = imageElement.src;
+            const isDoorTransition = 
+                (currentSrc.includes('door_closed') && newImageSrc.includes('door_opened')) ||
+                (currentSrc.includes('door_opened') && newImageSrc.includes('door_closed'));
+            
+            if (isDoorTransition) {
+                // Instant transition for door open/close
+                imageElement.src = newImageSrc;
+                setTimeout(resolve, 50);
+            } else {
+                // Smooth fade transition for other image changes
+                imageElement.style.transition = `opacity ${duration}ms ease-in-out`;
+                imageElement.style.opacity = '0';
+                
+                setTimeout(() => {
+                    imageElement.src = newImageSrc;
+                    imageElement.style.opacity = '1';
+                    setTimeout(resolve, duration);
+                }, duration);
+            }
         });
     }
     
-    // Helper function to change text with fade effect - optimized for speed
-    function changeTextWithFade(element, newText, duration = 200) {
+    // Helper function to change text with synchronized fade effect
+    function changeTextWithFade(element, newText, duration = 300) {
         return new Promise((resolve) => {
             element.style.transition = `opacity ${duration}ms ease-in-out`;
             element.style.opacity = '0';
@@ -108,13 +127,13 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 element.innerHTML = newText;
                 element.style.opacity = '1';
-                setTimeout(resolve, duration/2); // Reduce second delay by half
-            }, duration/2); // Reduce first delay by half
+                setTimeout(resolve, duration);
+            }, duration);
         });
     }
     
-    // Helper function to hide/show elements with fade effect - optimized for speed
-    function fadeElement(element, show, duration = 200) {
+    // Helper function to hide/show elements with fade effect
+    function fadeElement(element, show, duration = 300) {
         return new Promise((resolve) => {
             element.style.transition = `opacity ${duration}ms ease-in-out`;
             element.style.opacity = show ? '1' : '0';
@@ -128,6 +147,96 @@ document.addEventListener('DOMContentLoaded', function() {
                 element.style.display = 'flex';
                 setTimeout(resolve, duration);
             }
+        });
+    }
+    
+    // Synchronized transition function for smooth scene changes
+    function smoothTransition(imageChanges, textChanges, elementChanges = [], duration = 400) {
+        return new Promise(async (resolve) => {
+            // Phase 1: Fade out all elements simultaneously
+            const fadeOutPromises = [];
+            
+            // Add image fade out
+            if (imageChanges) {
+                const imageElement = document.querySelector('.illust-container img');
+                if (imageElement) {
+                    const currentSrc = imageElement.src;
+                    const isDoorTransition = 
+                        (currentSrc.includes('door_closed') && imageChanges.src.includes('door_opened')) ||
+                        (currentSrc.includes('door_opened') && imageChanges.src.includes('door_closed'));
+                    
+                    if (!isDoorTransition) {
+                        fadeOutPromises.push(new Promise(resolve => {
+                            imageElement.style.transition = `opacity ${duration}ms ease-in-out`;
+                            imageElement.style.opacity = '0';
+                            setTimeout(resolve, duration);
+                        }));
+                    }
+                }
+            }
+            
+            // Add text fade out
+            if (textChanges && textChanges.element) {
+                fadeOutPromises.push(new Promise(resolve => {
+                    textChanges.element.style.transition = `opacity ${duration}ms ease-in-out`;
+                    textChanges.element.style.opacity = '0';
+                    setTimeout(resolve, duration);
+                }));
+            }
+            
+            // Add element fade out
+            elementChanges.forEach(change => {
+                if (change.element && !change.show) {
+                    fadeOutPromises.push(fadeElement(change.element, false, duration));
+                }
+            });
+            
+            // Wait for all fade outs to complete
+            await Promise.all(fadeOutPromises);
+            
+            // Phase 2: Change content and fade in simultaneously
+            const fadeInPromises = [];
+            
+            // Change and fade in image
+            if (imageChanges) {
+                const imageElement = document.querySelector('.illust-container img');
+                if (imageElement) {
+                    const currentSrc = imageElement.src;
+                    const isDoorTransition = 
+                        (currentSrc.includes('door_closed') && imageChanges.src.includes('door_opened')) ||
+                        (currentSrc.includes('door_opened') && imageChanges.src.includes('door_closed'));
+                    
+                    if (isDoorTransition) {
+                        imageElement.src = imageChanges.src;
+                    } else {
+                        imageElement.src = imageChanges.src;
+                        fadeInPromises.push(new Promise(resolve => {
+                            imageElement.style.opacity = '1';
+                            setTimeout(resolve, duration);
+                        }));
+                    }
+                }
+            }
+            
+            // Change and fade in text
+            if (textChanges && textChanges.element) {
+                textChanges.element.innerHTML = textChanges.text;
+                fadeInPromises.push(new Promise(resolve => {
+                    textChanges.element.style.opacity = '1';
+                    setTimeout(resolve, duration);
+                }));
+            }
+            
+            // Fade in elements
+            elementChanges.forEach(change => {
+                if (change.element && change.show) {
+                    fadeInPromises.push(fadeElement(change.element, true, duration));
+                }
+            });
+            
+            // Wait for all fade ins to complete
+            await Promise.all(fadeInPromises);
+            resolve();
         });
     }
 
@@ -512,12 +621,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Generate circle and connecting line first
         generateRandomCircle();
         
-        // Apply fade effects
-        await Promise.all([
-            changeImageWithFade("source/construction.svg"),
-            changeTextWithFade(wayTitle, "늘 가던 길로 들어갔는데 공사중이었다.<br>새로운 길로 다시 찾아보자."),
-            fadeElement(choiceButtonContainer, false)
-        ]);
+        // Apply smooth synchronized transition
+        await smoothTransition(
+            { src: "source/construction.svg" },
+            { element: wayTitle, text: "늘 가던 길로 들어갔는데 공사중이었다.<br>새로운 길로 다시 찾아보자." },
+            [{ element: choiceButtonContainer, show: false }]
+        );
         
         // Create new choice button container
         const newChoiceContainer = document.createElement('div');
@@ -554,13 +663,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.style.transform = 'scale(1)';
             }, 150);
             
-            // Apply fade effects with consistent timing
-            const fadeDuration = 250;
-            await Promise.all([
-                changeImageWithFade("source/alert.svg", fadeDuration),
-                changeTextWithFade(wayTitle, "가다보니 내가 길을 잃었다. 도움을 요청할까?", fadeDuration),
-                currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
-            ]);
+            // Apply smooth synchronized transition
+            await smoothTransition(
+                { src: "source/alert.svg" },
+                { element: wayTitle, text: "가다보니 내가 길을 잃었다. 도움을 요청할까?" },
+                currentContainer ? [{ element: currentContainer, show: false }] : []
+            );
             
             // Create new choice button container for lost options
             const lostChoiceContainer = document.createElement('div');
@@ -912,12 +1020,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const wayTitle = document.getElementById('wayTitle');
             const currentContainer = document.getElementById('newChoiceButtonContainer');
             
-            // Apply fade effects
-            await Promise.all([
-                changeImageWithFade("source/map_man_0.svg"),
-                changeTextWithFade(wayTitle, "가다가 길을 잃은 것처럼 보이는 사람을 만났다.<br>먼저 말을 걸어 볼까?"),
-                currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
-            ]);
+            // Apply smooth synchronized transition
+            await smoothTransition(
+                { src: "source/map_man_0.svg" },
+                { element: wayTitle, text: "가다가 길을 잃은 것처럼 보이는 사람을 만났다.<br>먼저 말을 걸어 볼까?" },
+                currentContainer ? [{ element: currentContainer, show: false }] : []
+            );
             
             // Create new choice button container for lost person options
             const lostPersonChoiceContainer = document.createElement('div');
@@ -954,13 +1062,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     this.style.transform = 'scale(1)';
                 }, 150);
                 
-                // Apply fade effects with consistent timing
-                const fadeDuration = 250;
-                await Promise.all([
-                    changeImageWithFade("source/alert.svg", fadeDuration),
-                    changeTextWithFade(wayTitle, "가다보니 내가 길을 잃었다. 도움을 요청할까?", fadeDuration),
-                    currentContainer ? fadeElement(currentContainer, false, fadeDuration) : Promise.resolve()
-                ]);
+                // Apply smooth synchronized transition
+                await smoothTransition(
+                    { src: "source/alert.svg" },
+                    { element: wayTitle, text: "가다보니 내가 길을 잃었다. 도움을 요청할까?" },
+                    currentContainer ? [{ element: currentContainer, show: false }] : []
+                );
                 
                 // Create new choice button container for lost options
                 const lostChoiceContainer = document.createElement('div');
@@ -1754,9 +1861,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                         
                                         // After fade out, change to ending scene
                                         setTimeout(() => {
-                                            // Change image to sunset
-                                            doorImage.src = "source/sunset.svg";
-                                            doorImage.style.opacity = '1';
+                                            // Get the current image element
+                                            const currentImage = document.querySelector('.illust-container img');
+                                            if (currentImage) {
+                                                // Change image to sunset
+                                                currentImage.src = "source/sunset.svg";
+                                                currentImage.style.opacity = '1';
+                                            }
                                             
                                             // Change text
                                             wayTitle.innerHTML = "오늘 하루도 끝이 났다...";
@@ -1933,9 +2044,28 @@ document.addEventListener('DOMContentLoaded', function() {
                                     
                                     // After fade out, change to ending scene
                                     setTimeout(() => {
-                                        // Change image to sunset
-                                        doorImage.src = "source/sunset.svg";
-                                        doorImage.style.opacity = '1';
+                                        // Get the current image element
+                                        const currentImage = document.querySelector('.illust-container img');
+                                        const illustContainer = document.querySelector('.illust-container');
+                                        
+                                        if (currentImage && illustContainer) {
+                                            // Force container to be visible
+                                            illustContainer.style.display = 'flex';
+                                            illustContainer.style.visibility = 'visible';
+                                            illustContainer.style.opacity = '1';
+                                            
+                                            // Force image to be visible
+                                            currentImage.style.display = 'block';
+                                            currentImage.style.visibility = 'visible';
+                                            
+                                            // Change image to sunset
+                                            currentImage.src = "source/sunset.svg";
+                                            currentImage.style.opacity = '1';
+                                            
+                                            console.log('Successfully changed to sunset.svg');
+                                        } else {
+                                            console.error('Could not find image or container for sunset.svg');
+                                        }
                                         
                                         // Change text
                                         wayTitle.innerHTML = "오늘 하루도 끝이 났다...";
@@ -2176,9 +2306,28 @@ document.addEventListener('DOMContentLoaded', function() {
                                     
                                     // After fade out, change to ending scene
                                     setTimeout(() => {
-                                        // Change image to sunset
-                                        doorImage.src = "source/sunset.svg";
-                                        doorImage.style.opacity = '1';
+                                        // Get the current image element
+                                        const currentImage = document.querySelector('.illust-container img');
+                                        const illustContainer = document.querySelector('.illust-container');
+                                        
+                                        if (currentImage && illustContainer) {
+                                            // Force container to be visible
+                                            illustContainer.style.display = 'flex';
+                                            illustContainer.style.visibility = 'visible';
+                                            illustContainer.style.opacity = '1';
+                                            
+                                            // Force image to be visible
+                                            currentImage.style.display = 'block';
+                                            currentImage.style.visibility = 'visible';
+                                            
+                                            // Change image to sunset
+                                            currentImage.src = "source/sunset.svg";
+                                            currentImage.style.opacity = '1';
+                                            
+                                            console.log('Successfully changed to sunset.svg');
+                                        } else {
+                                            console.error('Could not find image or container for sunset.svg');
+                                        }
                                         
                                         // Change text
                                         wayTitle.innerHTML = "오늘 하루도 끝이 났다...";
@@ -2568,12 +2717,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Get the image element
                     const doorImage = document.querySelector('.illust-container img');
                     
-                    // Hide buttons and clear everything first
+                    // Hide buttons and clear text
                     await Promise.all([
                         currentContainer ? fadeElement(currentContainer, false) : Promise.resolve(),
-                        fadeElement(wayTitle, false),
-                        doorImage ? fadeElement(doorImage, false) : Promise.resolve()
+                        fadeElement(wayTitle, false)
                     ]);
+                    
+                    // Keep image visible but fade it out temporarily
+                    if (doorImage) {
+                        doorImage.style.transition = 'opacity 300ms ease-in-out';
+                        doorImage.style.opacity = '0.3'; // Partially fade but keep visible
+                    }
                     
                     // Clear the text and reset opacity
                     wayTitle.innerHTML = '';
@@ -2594,12 +2748,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             // Ensure image element is available and visible before changing
                             const currentImage = document.querySelector('.illust-container img');
                             if (currentImage) {
-                                // Make sure image container is visible
+                                // Make sure image container and image are visible
                                 const illustContainer = document.querySelector('.illust-container');
                                 if (illustContainer) {
                                     illustContainer.style.display = 'flex';
                                     illustContainer.style.opacity = '1';
                                 }
+                                
+                                // Make sure image element is visible
+                                currentImage.style.display = 'block';
+                                currentImage.style.opacity = '1';
                                 
                                 console.log('Changing image to none.svg');
                                 // Use direct image change instead of fadeImage function
@@ -3299,9 +3457,28 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 // Change to sunset scene
                                                 // Wait a moment before showing sunset elements
                                                 setTimeout(() => {
-                                                    // Update image source and fade in
-                                                    doorImage.src = "source/sunset.svg";
-                                                    doorImage.style.opacity = '1';
+                                                    // Get the current image element and update
+                                                    const currentImage = document.querySelector('.illust-container img');
+                                                    const illustContainer = document.querySelector('.illust-container');
+                                                    
+                                                    if (currentImage && illustContainer) {
+                                                        // Force container to be visible
+                                                        illustContainer.style.display = 'flex';
+                                                        illustContainer.style.visibility = 'visible';
+                                                        illustContainer.style.opacity = '1';
+                                                        
+                                                        // Force image to be visible
+                                                        currentImage.style.display = 'block';
+                                                        currentImage.style.visibility = 'visible';
+                                                        
+                                                        // Change image to sunset
+                                                        currentImage.src = "source/sunset.svg";
+                                                        currentImage.style.opacity = '1';
+                                                        
+                                                        console.log('Successfully changed to sunset.svg in ending sequence');
+                                                    } else {
+                                                        console.error('Could not find image or container for sunset.svg in ending sequence');
+                                                    }
                                                     
                                                     // Update text and show
                                                     wayTitle.innerHTML = "오늘 하루도 끝이 났다...";
