@@ -1,3 +1,26 @@
+// Auto-refresh after 1 minute of inactivity
+let inactivityTimer;
+const INACTIVITY_DURATION = 60000; // 1 minute in milliseconds
+
+function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    inactivityTimer = setTimeout(() => {
+        console.log('1 minute of inactivity detected - reloading page');
+        location.reload();
+    }, INACTIVITY_DURATION);
+}
+
+// Start the inactivity timer when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    resetInactivityTimer();
+    
+    // Reset timer on any click event
+    document.addEventListener('click', function() {
+        console.log('Click detected - resetting inactivity timer');
+        resetInactivityTimer();
+    });
+});
+
 // Double Click Prevention Utility
 function preventDoubleClick(button, callback, duration = 1000) {
     let isButtonProcessing = false;
@@ -1612,8 +1635,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 generateRandomCircle();
             });
             
-            // Add buttons to lost person container
-            lostPersonChoiceContainer.appendChild(ignorePersonButton);
+            // Add button to lost person container
             lostPersonChoiceContainer.appendChild(talkToPersonButton);
             
             // Add lost person choice container to choice section
