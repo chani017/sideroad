@@ -1648,15 +1648,37 @@ document.addEventListener('DOMContentLoaded', function() {
                     const wayTitle = document.getElementById('wayTitle');
                     const currentContainer = document.getElementById('escapeChoiceButtonContainer');
                     
-                    // Apply fade effects
+                    // Apply fade effects for image and hide buttons
                     await Promise.all([
                         changeImageWithFade("source/punch.svg"),
-                        changeTextWithFade(wayTitle, "변명이 통하지 않았다.<br>주먹을 맞고 쓰러졌다.<br>두 눈이 깜깜해진다..<br>(암전)"),
                         currentContainer ? fadeElement(currentContainer, false) : Promise.resolve()
                     ]);
                     
                     // Generate circle and connecting line
                     generateRandomCircle();
+                    
+                    // Clear text first
+                    wayTitle.innerHTML = '';
+                    wayTitle.style.opacity = '1';
+                    
+                    // Text lines to appear sequentially with 1 second intervals
+                    const textLines = [
+                        '변명이 통하지 않았다.',
+                        '주먹을 맞고 쓰러졌다.',
+                        '두 눈이 깜깜해진다...',
+                        '(암전)'
+                    ];
+                    
+                    // Display each line with 1 second interval
+                    for (let i = 0; i < textLines.length; i++) {
+                        setTimeout(() => {
+                            if (i === 0) {
+                                wayTitle.innerHTML = textLines[i];
+                            } else {
+                                wayTitle.innerHTML += '<br>' + textLines[i];
+                            }
+                        }, i * 1000); // 1 second intervals
+                    }
                     
                     // Create overlay for fade effect
                     const fadeOverlay = document.createElement('div');
@@ -1672,7 +1694,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     fadeOverlay.style.pointerEvents = 'none';
                     document.body.appendChild(fadeOverlay);
                     
-                    // Start fading to black after 3 seconds
+                    // Start fading to black after all text appears (4 seconds for text + 1 second delay)
                     setTimeout(() => {
                         fadeOverlay.style.opacity = '1';
                         
@@ -1811,7 +1833,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             
                         }, 3000); // Wait 3 seconds while screen is black
                         
-                    }, 3000); // Wait 3 seconds before starting fade to black
+                    }, 4000); // Start fade to black 1 second after last text appears
                     
                     // Add button click effect
                     this.style.transform = 'scale(0.95)';

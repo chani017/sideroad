@@ -525,8 +525,8 @@ main {
 /* Title Text - Rotated and positioned on right side */
 .title-text {
     position: fixed;
-    right: -16vh; /* 화면 최우측에서 20px 여백 */
-    top: 25%; /* 세로 중앙 */
+    right: -8vw; /* 화면 최우측에서 20px 여백 */
+    top: 20%; /* 세로 중앙 */
     transform: translateY(-50%) rotate(90deg); /* 세로 중앙 정렬 + 90도 회전 */
     transform-origin: center; /* 회전 중심점을 요소 중앙으로 */
     font-family: 'OnulDamso-Heavy', sans-serif; /* Damso Heavy 폰트 */
