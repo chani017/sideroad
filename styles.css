@@ -548,3 +548,144 @@ main {
     -moz-user-select: none;
     -ms-user-select: none;
 }
+
+/* Mobile Responsive Design */
+@media screen and (max-width: 768px) {
+    /* Splash Screen Mobile Optimization */
+    .title-svg {
+        width: 90vw;
+        padding-top: 5vh;
+    }
+    
+    .left-svg {
+        left: -5vw;
+        top: 25vh;
+        width: 40vw;
+    }
+    
+    .right-svg-top {
+        right: -10vw;
+        top: -50vh;
+        width: 50vw;
+    }
+    
+    .right-svg-bottom {
+        right: 20vw;
+        top: 30vh;
+        width: 45vw;
+    }
+    
+    .click-text {
+        font-size: 1.5rem;
+        bottom: 15vh;
+    }
+    
+    /* Main Content Mobile Optimization */
+    .choice-section {
+        top: 50%;
+        padding: 20px;
+    }
+    
+    .illust-container img {
+        max-height: 300px;
+        width: auto;
+    }
+    
+    .dot-btn {
+        padding: 12px 20px;
+        font-size: 16px;
+        width: 280px;
+        text-align: center;
+    }
+    
+    .way-title {
+        font-size: 1.2rem;
+        margin-bottom: 15px;
+        padding: 10px 20px;
+        line-height: 1.3;
+    }
+    
+    .button-container {
+        gap: 12px;
+        margin-top: 15px;
+    }
+    
+    .home-svg {
+        width: 40px;
+        height: 40px;
+        top: 15px;
+        left: 15px;
+    }
+    
+    .title-text {
+        font-size: 14pt;
+        right: -5vw;
+        top: 30%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    /* Extra small mobile screens */
+    .splash-screen {
+        padding-top: 2vh;
+        padding-left: 1vw;
+    }
+    
+    .title-svg {
+        width: 95vw;
+    }
+    
+    .click-text {
+        font-size: 1.2rem;
+        bottom: 12vh;
+    }
+    
+    .choice-section {
+        padding: 15px;
+    }
+    
+    .illust-container img {
+        max-height: 250px;
+    }
+    
+    .dot-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+        width: 260px;
+    }
+    
+    .way-title {
+        font-size: 1rem;
+        padding: 8px 15px;
+    }
+    
+    .title-text {
+        font-size: 12pt;
+        right: -3vw;
+    }
+    
+    .home-svg {
+        width: 35px;
+        height: 35px;
+        top: 10px;
+        left: 10px;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .dot-btn {
+        min-height: 48px; /* Ensure minimum touch target size */
+        touch-action: manipulation; /* Disable double-tap zoom */
+    }
+    
+    .dot-btn:hover {
+        background-color: #000000; /* Disable hover effects on touch */
+        transform: none;
+    }
+    
+    .dot-btn:active {
+        background-color: #333333;
+        transform: scale(0.95);
+    }
+}

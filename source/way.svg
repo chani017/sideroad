@@ -1,1 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_20" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2834.6 2834.6"><defs><style>.cls-1{fill:none;stroke:#000;stroke-miterlimit:10;stroke-width:96px;}</style></defs><line class="cls-1" x1="1522.7" y1="1448.7" x2="1522.7" y2="1249.9"/><line class="cls-1" x1="1311.9" y1="1448.7" x2="1311.9" y2="1249.9"/><circle class="cls-1" cx="1417.3" cy="734.9" r="465.4"/><polyline class="cls-1" points="1256.6 595.3 1114.6 737.3 1251.8 874.4"/><polyline class="cls-1" points="1578 874.4 1720 732.5 1582.8 595.3"/><line class="cls-1" x1="1114.6" y1="737.3" x2="1379.3" y2="737.3"/><line class="cls-1" x1="1445.7" y1="737.3" x2="1710.4" y2="737.3"/><path class="cls-1" d="M1379.3,1522.7s-219-368.2-1333.6-440.5"/><path class="cls-1" d="M1455.3,1522.7s214.4-322.5,1329.1-394.7"/><path class="cls-1" d="M1004.4,1882s68.3-358.7-958.6-512.1"/><line class="cls-1" x1="995.7" y1="1914.2" x2="810.1" y2="2553.9"/><path class="cls-1" d="M1830.2,1882s-72.9-312.9,954.1-466.3"/><line class="cls-1" x1="1838.9" y1="1914.2" x2="2024.5" y2="2553.9"/></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_20" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 2834.6 2834.6">
+  <!-- Generator: Adobe Illustrator 29.1.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 142)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: none;
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 96px;
+      }
+    </style>
+  </defs>
+  <line class="st0" x1="1522.7" y1="1448.7" x2="1522.7" y2="1249.9"/>
+  <line class="st0" x1="1311.9" y1="1448.7" x2="1311.9" y2="1249.9"/>
+  <circle class="st0" cx="1417.3" cy="734.9" r="465.4"/>
+  <polyline class="st0" points="1256.6 595.3 1114.6 737.3 1251.8 874.4"/>
+  <polyline class="st0" points="1578 874.4 1720 732.5 1582.8 595.3"/>
+  <line class="st0" x1="1114.6" y1="737.3" x2="1379.3" y2="737.3"/>
+  <line class="st0" x1="1445.7" y1="737.3" x2="1710.4" y2="737.3"/>
+  <path class="st0" d="M1379.3,1522.7s-219-368.2-1333.6-440.5"/>
+  <path class="st0" d="M1455.3,1522.7s214.4-322.5,1329.1-394.7"/>
+  <path class="st0" d="M1004.4,1882s68.3-358.7-958.6-512.1"/>
+  <line class="st0" x1="995.7" y1="1914.2" x2="810.1" y2="2553.9"/>
+  <path class="st0" d="M1830.2,1882s-72.9-312.9,954.1-466.3"/>
+  <line class="st0" x1="1838.9" y1="1914.2" x2="2024.5" y2="2553.9"/>
+</svg>
