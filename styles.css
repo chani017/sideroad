@@ -12,6 +12,13 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'BookkGothic-Bold';
+    src: url('./font/BookkGothic_Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-display: swap;
+}
+
 /* Splash Screen */
 .splash-screen {
     position: fixed;
@@ -245,7 +252,7 @@
     bottom: 10vh;
     left: 50%;
     transform: translateX(-50%);
-    font-family: 'OnulDamso-Bold', sans-serif;
+    font-family: 'BookkGothic-Bold', sans-serif;
     font-size: 2rem;
     color: #000000;
     opacity: 0;
@@ -409,7 +416,7 @@ main {
     padding: 15px 30px;
     font-size: 20px;
     font-weight: bold;
-    font-family: 'OnulDamso-Bold', sans-serif;
+    font-family: 'BookkGothic-Bold', sans-serif;
     cursor: pointer;
     transition: opacity 0.2s ease-in-out, transform 0.15s ease;
     border: none;
@@ -445,7 +452,7 @@ main {
 .way-title {
     font-size: 1.5rem;
     font-weight: bold;
-    font-family: 'OnulDamso-Heavy', sans-serif;
+    font-family: 'BookkGothic-Bold', sans-serif;
     color: #000000;
     margin-bottom: 20px;
     text-align: center;
@@ -529,7 +536,7 @@ main {
     top: 20%; /* 세로 중앙 */
     transform: translateY(-50%) rotate(90deg); /* 세로 중앙 정렬 + 90도 회전 */
     transform-origin: center; /* 회전 중심점을 요소 중앙으로 */
-    font-family: 'OnulDamso-Heavy', sans-serif; /* Damso Heavy 폰트 */
+    font-family: 'BookkGothic-Bold', sans-serif; /* Damso Heavy 폰트 */
     font-size: 20pt; /* 50포인트 크기 */
     font-weight: bold;
     color: #000000;
